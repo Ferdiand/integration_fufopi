@@ -78,6 +78,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             while self._serial.in_waiting() > 0:
+                _waiting = self._serial.in_waiting()
+                self.logger.warning(_waiting)
                 _buffer = self._serial.read()
                 if _buffer is "\n".encode():
                     self.logger.warning(_buffer)
