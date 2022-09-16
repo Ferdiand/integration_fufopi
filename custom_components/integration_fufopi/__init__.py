@@ -7,14 +7,12 @@ https://github.com/custom-components/integration_blueprint
 import asyncio
 from datetime import timedelta
 import logging
+import serial
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from .api import IntegrationBlueprintApiClient
 
 from .const import (
     CONF_PASSWORD,
@@ -40,13 +38,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
 
-    username = entry.data.get(CONF_USERNAME)
-    password = entry.data.get(CONF_PASSWORD)
-
-    session = async_get_clientsession(hass)
-    client = IntegrationBlueprintApiClient(username, password, session)
-
-    coordinator = BlueprintDataUpdateCoordinator(hass, client=client)
+    coordinator = VEDirectCoordinator(
+        hass=hass, logger=_LOGGER, name="Victron Solar", update_interval=timedelta(2)
+    )
     await coordinator.async_refresh()
 
     if not coordinator.last_update_success:
@@ -54,33 +48,37 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    for platform in PLATFORMS:
-        if entry.options.get(platform, True):
-            coordinator.platforms.append(platform)
-            hass.async_add_job(
-                hass.config_entries.async_forward_entry_setup(entry, platform)
-            )
+    # for platform in PLATFORMS:
+    #    if entry.options.get(platform, True):
+    #        coordinator.platforms.append(platform)
+    #        hass.async_add_job(#
+    #         hass.config_entries.async_forward_entry_setup(entry, platform)
+    #        )
 
-    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+    # entry.async_on_unload(entry.add_update_listener(async_reload_entry))
     return True
 
 
-class BlueprintDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching data from the API."""
+class VEDirectCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching data from Victron VE Direct"""
 
     def __init__(
-        self, hass: HomeAssistant, client: IntegrationBlueprintApiClient
+        self,
+        hass: HomeAssistant,
+        logger: logging.Logger,
+        name: str,
+        update_interval: timedelta,
     ) -> None:
-        """Initialize."""
-        self.api = client
-        self.platforms = []
+        super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
+        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
 
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            return await self.api.async_get_data()
+            _buffer = self._serial.read_until("\r\n")
+            self.logger.warning(_buffer)
+            return _buffer
         except Exception as exception:
             raise UpdateFailed() from exception
 
