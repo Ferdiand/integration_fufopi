@@ -76,7 +76,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via library."""
-        _buffer = self._serial.read_all()
+        _buffer = self._serial.readall()
         self.logger.warning(_buffer)
 
         return _buffer
