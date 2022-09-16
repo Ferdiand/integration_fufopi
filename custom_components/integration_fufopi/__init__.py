@@ -72,21 +72,19 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=None)
+        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=0)
 
     async def _async_update_data(self):
         """Update data via library."""
-        try:
-            while self._serial.in_waiting() > 0:
-                _waiting = self._serial.in_waiting()
-                self.logger.warning(_waiting)
-                _buffer = self._serial.read()
-                if _buffer is "\n".encode():
-                    self.logger.warning(_buffer)
 
-            return _buffer
-        except Exception as exception:
-            raise UpdateFailed() from exception
+        while self._serial.in_waiting() > 0:
+            _waiting = self._serial.in_waiting()
+            self.logger.warning(_waiting)
+            _buffer = self._serial.read()
+            if _buffer is "\n".encode():
+                self.logger.warning(_buffer)
+
+        return _buffer
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
