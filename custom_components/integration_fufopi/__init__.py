@@ -77,8 +77,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
 
-        while self._serial.in_waiting() > 0:
-            _waiting = self._serial.in_waiting()
+        while self._serial.in_waiting > 0:
+            _waiting = self._serial.in_waiting
             self.logger.warning(_waiting)
             _buffer = self._serial.read()
             if _buffer is "\n".encode():
