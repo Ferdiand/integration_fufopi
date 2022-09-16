@@ -71,12 +71,12 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
+        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=0)
 
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            _buffer = self._serial.read_until("\n")
+            _buffer = self._serial.read_until("\r\n".encode())
             self.logger.warning(_buffer)
             return _buffer
         except Exception as exception:
