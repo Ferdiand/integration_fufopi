@@ -40,7 +40,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.info(STARTUP_MESSAGE)
 
     coordinator = VEDirectCoordinator(
-        hass=hass, logger=_LOGGER, name="Victron Solar", update_interval=timedelta(2)
+        hass=hass,
+        logger=_LOGGER,
+        name="Victron Solar",
+        update_interval=timedelta(seconds=2),
     )
     await coordinator.async_refresh()
 
