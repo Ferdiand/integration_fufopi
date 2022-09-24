@@ -128,9 +128,9 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     def config_ready(self):
         """retrun true if configuration is ready to finish"""
         return (
-            self.data["PID"]["value"] != ""
-            and self.data["FW"]["value"] != ""
-            and self.data["SER#"]["value"] != ""
+            self.data["PID"]["value"] is not ""
+            and self.data["FW"]["value"] is not ""
+            and self.data["SER#"]["value"] is not ""
         )
 
     def simulate_buffer(self):
