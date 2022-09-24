@@ -14,6 +14,12 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
     """integration_blueprint Sensor class."""
 
+    def __init__(self, coordinator, config_entry, key):
+        super().__init__(coordinator, config_entry, key)
+        if self.key is "V":
+            self._attr_device_class = "voltage"
+            self._attr_native_unit_of_measurement = "V"
+
     @property
     def name(self):
         """Return the name of the sensor."""
