@@ -8,7 +8,12 @@ from .entity import VEDirectEntity
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_devices([IntegrationBlueprintSensor(coordinator, entry, "V")])
+    async_add_devices(
+        [
+            IntegrationBlueprintSensor(coordinator, entry, "V"),
+            IntegrationBlueprintSensor(coordinator, entry, "VPV"),
+        ]
+    )
 
 
 class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
@@ -16,7 +21,7 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry, key):
         super().__init__(coordinator, config_entry, key)
-        if self.key == "V":
+        if self.key in ("V", "VPV"):
             self._attr_device_class = "voltage"
             self._attr_native_unit_of_measurement = "V"
 
@@ -25,10 +30,12 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         """Return the name of the sensor."""
         if self.key == "V":
             return "Battery Voltage"
+        elif self.key == "VPV":
+            return "Panel Voltage"
         else:
             return f"{DEFAULT_NAME}_{SENSOR}_" + self.key
 
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        return self.coordinator.data[self.key]["value"]
+        return float(self.coordinator.data[self.key]["value"])
