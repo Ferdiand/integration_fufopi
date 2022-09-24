@@ -21,8 +21,8 @@ class VEDirectEntity(CoordinatorEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self.unique_id)},
-            "name": self.coordinator["PID"]["value"],
-            "model": self.coordinator["SER#"]["value"],
+            "name": self.coordinator.data["PID"]["value"],
+            "model": self.coordinator.data["SER#"]["value"],
             "manufacturer": "Victron",
         }
 
