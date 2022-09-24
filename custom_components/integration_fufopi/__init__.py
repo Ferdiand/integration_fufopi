@@ -155,7 +155,10 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 _key = _field[0]
                 _value = _field[1]
                 if _key in _data_cpy.keys():
-                    _data_cpy[_key]["value"] = _value
+                    if _data_cpy[_key] is Decimal:
+                        _data_cpy[_key]["value"] = Decimal(_value)
+                    else:
+                        _data_cpy[_key]["value"] = _value
                     _data_cpy[_key]["last_update"] = time.time()
                 else:
                     self.logger.warning(f"Key not defined {_field}")
