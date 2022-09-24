@@ -19,6 +19,7 @@ SENSOR = "sensor"
 SWITCH = "switch"
 PLATFORMS = [BINARY_SENSOR, SENSOR, SWITCH]
 
+OPTIONS = ["Simulation"]
 
 # Configuration and options
 CONF_ENABLED = "enabled"

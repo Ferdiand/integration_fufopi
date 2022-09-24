@@ -72,7 +72,10 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
+        try:
+            self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
+        except:
+            self.simulation = True
 
         self.data = {
             "PID": {"value": "", "last_update": time.time()},
@@ -101,7 +104,10 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         _data_cpy = {}
         _data_cpy = self.data
-        _buffer = self._serial.readlines()
+        if self.simulation is False:
+            _buffer = self._serial.readlines()
+        else:
+            _buffer = self.simulate_buffer()
         self.logger.warning({_buffer})
         for line in _buffer:
             _field = line.split("\t")
@@ -119,11 +125,37 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         return _buffer
 
     def config_ready(self):
+        """retrun true if configuration is ready to finish"""
         return (
             self.data["PID"]["value"] != ""
             and self.data["FW"]["value"] != ""
             and self.data["SER#"]["value"] != ""
         )
+
+    def simulate_buffer(self):
+        """return simulated buffer"""
+        return [
+            "PID\t0x000",
+            "FW\t156",
+            "SER#\t453646543643",
+            "V\t12000",
+            "I\t10000",
+            "VPV\t19000",
+            "PPV\t50",
+            "CS\t0",
+            "MPPT\t0",
+            "OR\t0x0000",
+            "ERR\t0",
+            "LOAD\tON",
+            "H19\t15",
+            "H20\t33",
+            "H21\t34",
+            "H22\t34",
+            "H23\t45",
+            "HSDS\t69",
+            "Checksum\tb",
+            "IL\t500",
+        ]
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

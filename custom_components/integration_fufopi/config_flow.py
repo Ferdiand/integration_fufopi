@@ -9,7 +9,7 @@ from .const import (
     CONF_PASSWORD,
     CONF_USERNAME,
     DOMAIN,
-    PLATFORMS,
+    OPTIONS,
 )
 
 
@@ -65,7 +65,7 @@ class FufopiOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Required(x, default=self.options.get(x, True)): bool
-                    for x in sorted(PLATFORMS)
+                    for x in sorted(OPTIONS)
                 }
             ),
         )
