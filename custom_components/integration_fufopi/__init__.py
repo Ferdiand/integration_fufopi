@@ -8,7 +8,9 @@ import asyncio
 from base64 import encode
 from dataclasses import field
 from datetime import timedelta
+from decimal import Decimal
 import logging
+from unicodedata import decimal
 import serial
 import time
 
@@ -88,13 +90,41 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             self.simulation = True
 
         self.data = {
-            "PID": {"value": "", "last_update": time.time()},
-            "FW": {"value": "", "last_update": time.time()},
-            "SER#": {"value": "", "last_update": time.time()},
-            "V": {"value": "", "last_update": time.time()},
-            "I": {"value": "", "last_update": time.time()},
-            "VPV": {"value": "", "last_update": time.time()},
-            "PPV": {"value": "", "last_update": time.time()},
+            "PID": {
+                "name": "Product ID",
+                "value": "",
+                "last_update": time.time(),
+            },
+            "FW": {
+                "name": "Firmware Version",
+                "value": "",
+                "last_update": time.time(),
+            },
+            "SER#": {
+                "name": "Serial Number",
+                "value": "",
+                "last_update": time.time(),
+            },
+            "V": {
+                "name": "Battery Voltage",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "I": {
+                "name": "Battery Current",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "VPV": {
+                "name": "Panel Voltage",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "PPV": {
+                "name": "Panel Power",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
             "CS": {"value": "", "last_update": time.time()},
             "MPPT": {"value": "", "last_update": time.time()},
             "OR": {"value": "", "last_update": time.time()},

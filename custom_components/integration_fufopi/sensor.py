@@ -1,4 +1,5 @@
 """Sensor platform for integration_blueprint."""
+from decimal import Decimal
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
@@ -12,6 +13,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
         [
             IntegrationBlueprintSensor(coordinator, entry, "V"),
             IntegrationBlueprintSensor(coordinator, entry, "VPV"),
+            IntegrationBlueprintSensor(coordinator, entry, "PPV"),
         ]
     )
 
@@ -24,18 +26,19 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         if self.key in ("V", "VPV"):
             self._attr_device_class = "voltage"
             self._attr_native_unit_of_measurement = "V"
+        elif self.key in ("PPV"):
+            self._attr_device_class = "power"
+            self._attr_native_unit_of_measurement = "W"
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        if self.key == "V":
-            return "Battery Voltage"
-        elif self.key == "VPV":
-            return "Panel Voltage"
-        else:
-            return f"{DEFAULT_NAME}_{SENSOR}_" + self.key
+        return self.coordinator.data[self.key]["name"]
 
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        return float(self.coordinator.data[self.key]["value"])
+        if self.key in ("V", "VPV"):
+            return self.coordinator.data[self.key]["value"] / 1000
+
+        return self.coordinator.data[self.key]["value"]

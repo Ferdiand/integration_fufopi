@@ -20,7 +20,7 @@ class VEDirectEntity(CoordinatorEntity):
     @property
     def device_info(self):
         return {
-            "identifiers": {(DOMAIN, self.unique_id)},
+            "identifiers": {(DOMAIN, self.coordinator.data["SER#"]["value"])},
             "name": self.coordinator.data["PID"]["value"],
             "model": self.coordinator.data["SER#"]["value"],
             "manufacturer": "Victron",
