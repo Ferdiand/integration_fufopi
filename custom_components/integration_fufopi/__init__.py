@@ -47,7 +47,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not coordinator.last_update_success or not coordinator.config_ready():
         raise ConfigEntryNotReady
 
+    # coordinator.platforms.append("sensor")
+
     hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
 
     # for platform in PLATFORMS:
     #    if entry.options.get(platform, True):
@@ -57,7 +61,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     #        )
 
     # entry.async_on_unload(entry.add_update_listener(async_reload_entry))
-    return True
+    return entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
 
 class VEDirectCoordinator(DataUpdateCoordinator):
