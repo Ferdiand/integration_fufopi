@@ -74,6 +74,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
+            self.simulation = False
         except:
             self.simulation = True
 
@@ -108,7 +109,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             _buffer = self._serial.readlines()
         else:
             _buffer = self.simulate_buffer()
-        self.logger.warning({_buffer})
+        self.logger.warning(f"{_buffer}")
         for line in _buffer:
             _field = line.split("\t")
             if len(_field) > 1:
