@@ -123,7 +123,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             else:
                 self.logger.warning(f"Field structure not valid: {_field}")
 
-        return _buffer
+        return _data_cpy
 
     def config_ready(self):
         """retrun true if configuration is ready to finish"""
