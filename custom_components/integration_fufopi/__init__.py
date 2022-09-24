@@ -61,7 +61,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     #        )
 
     # entry.async_on_unload(entry.add_update_listener(async_reload_entry))
-    return entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    return True
 
 
 class VEDirectCoordinator(DataUpdateCoordinator):
