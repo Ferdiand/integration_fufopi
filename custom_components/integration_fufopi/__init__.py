@@ -107,16 +107,19 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": "",
                 "last_update": time.time(),
                 "value_list": PID_VALUE_LIST,
+                "icon": "mdi:identifier",
             },
             "FW": {
                 "name": "Firmware Version",
                 "value": "",
                 "last_update": time.time(),
+                "icon": "mdi:identifier",
             },
             "SER#": {
                 "name": "Serial Number",
                 "value": "",
                 "last_update": time.time(),
+                "icon": "mdi:music-accidental-sharp",
             },
             "V": {
                 "name": "Battery Voltage",
@@ -155,18 +158,21 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": "",
                 "last_update": time.time(),
                 "value_list": CS_VALUE_LIST,
+                "icon": "mdi:car-turbocharger",
             },
             "MPPT": {
                 "name": "Tracker operation mode",
                 "value": "",
                 "last_update": time.time(),
                 "value_list": MPPT_VALUE_LIST,
+                "icon": "mdi:radar",
             },
             "OR": {
                 "name": "Off Reason",
                 "value": "",
                 "last_update": time.time(),
                 "value_list": OR_VALUE_LIST,
+                "icon": "mdi:playlist-remove",
             },
             "H19": {
                 "name": "Yield total",
@@ -224,7 +230,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "A",
-                "state_class": "cuurent",
+                "device_class": DEVICE_CLASS_POWER,
             },
         }
 

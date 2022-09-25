@@ -49,3 +49,12 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
             return _data["value_list"][_data["value"]]
 
         return self.coordinator.data[self.key]["value"]
+
+    @property
+    def icon(self) -> str | None:
+        _data = self.coordinator.data[self.key]
+        if not isinstance(_data["value"], Decimal):
+            if "value_list" in list(_data.keys()):
+                return _data["icon"]
+
+        return super().icon
