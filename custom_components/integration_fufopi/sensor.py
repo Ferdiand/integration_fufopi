@@ -2,7 +2,11 @@
 from decimal import Decimal
 from distutils.command.config import config
 from unicodedata import decimal
-from homeassistant.components.sensor import SensorEntity, DEVICE_CLASS_POWER
+from homeassistant.components.sensor import (
+    SensorEntity,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_BATTERY,
+)
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
 from .entity import VEDirectEntity
@@ -155,3 +159,44 @@ class LoadPowerSensor(VEDirectEntity, SensorEntity):
         )
 
         return (_v * _i).quantize(Decimal("1.000"))
+
+
+class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
+    """% of battery capacity"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry, "BPC")
+        self._attr_device_class = DEVICE_CLASS_BATTERY
+
+        self.scale = [
+            (9000, 0.0),
+            (10000, 20.0),
+            (11000, 40.0),
+            (12000, 60.0),
+            (13000, 80.0),
+            (14000, 100.0),
+            (15000, 120.0),
+        ]
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Battery left"
+
+    @property
+    def native_value(self):
+        _v_batt = self.coordinator.data["V"]["value"]
+        if _v_batt >= Decimal(9000):
+            for _i in range(len(self.scale)):
+                _v, _percent = self.scale[_i]
+                if _v_batt == Decimal(_v):
+                    return Decimal(_percent)
+
+                if _v_batt < Decimal(_v):
+                    _v_last, _percent_last = self.scale[_i - 1]
+                    _m = (_percent - _percent_last) / (_v - _v_last)
+                    _n = _m * _percent_last - _v_last
+
+                    return Decimal((_v * _m) - _n).quantize(Decimal("1.0"))
+
+        return Decimal(0)

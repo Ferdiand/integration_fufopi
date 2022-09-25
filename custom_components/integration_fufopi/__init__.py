@@ -280,15 +280,15 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             elif _key == "SER#":
                 _buff.append(f"{_key}\t1234567890")
             elif _key == "V":
-                _buff.append(f"{_key}\t{random.randrange(12000,14000)}")
+                _buff.append(f"{_key}\t{random.randrange(9000,14500)}")
             elif _key in ("I", "IL"):
                 _buff.append(f"{_key}\t{random.randrange(-5000,5000)}")
             elif _key == "VPV":
                 _buff.append(f"{_key}\t{random.randrange(0,20000)}")
             elif _key == "PPV":
-                _buff.append(f"{_key}\t{random.randrange(0,20000)}")
+                _buff.append(f"{_key}\t{random.randrange(0,100)}")
             elif _key in ("H19", "H20", "H21", "H22", "H23"):
-                _buff.append(f"{_key}\t{random.randrange(0,20000)}")
+                _buff.append(f"{_key}\t{random.randrange(0,200)}")
             elif "value_list" in list(self.data[_key].keys()):
                 _list = list(self.data[_key]["value_list"].keys())
                 # self.logger.warning(f"value list:{_key} ::: {_list}")
