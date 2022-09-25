@@ -64,7 +64,7 @@ MPPT_VALUE_LIST = {
     "0": "Off",
     "1": "Voltage or current limited",
     "2": "MPP Tracker active",
-}.keys()
+}
 
 
 async def async_setup(hass: HomeAssistant, config: Config):
@@ -311,9 +311,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             elif "value_list" in list(self.data[_key].keys()):
                 _list = list(self.data[_key]["value_list"].keys())
                 self.logger.warning(f"value list:{_key} ::: {_list}")
-                # _buff.append(
-                #    f"{_key}\t{random.choice(list(self.data[_key]['value_list'].keys()))}"
-                # )
+                _buff.append(f"{_key}\t{random.choice(_list)}")
         return _buff
 
 
