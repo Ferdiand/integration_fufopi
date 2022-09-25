@@ -281,8 +281,10 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 _buff.append(f"{_key}\t1234567890")
             elif _key == "V":
                 _buff.append(f"{_key}\t{random.randrange(9000,14500)}")
-            elif _key in ("I", "IL"):
+            elif _key == "I":
                 _buff.append(f"{_key}\t{random.randrange(-5000,5000)}")
+            elif _key == "IL":
+                _buff.append(f"{_key}\t{random.randrange(0,5000)}")
             elif _key == "VPV":
                 _buff.append(f"{_key}\t{random.randrange(0,20000)}")
             elif _key == "PPV":
