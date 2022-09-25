@@ -1,7 +1,8 @@
 """Sensor platform for integration_blueprint."""
 from decimal import Decimal
+from distutils.command.config import config
 from unicodedata import decimal
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, DEVICE_CLASS_POWER
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
 from .entity import VEDirectEntity
@@ -13,6 +14,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors = []
     for key in list(coordinator.data.keys()):
         _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
+
+    _sensors.append(PowerFromBattSensor(coordinator, entry))
+    _sensors.append(PowerToBattSensor(coordinator, entry))
+
     async_add_devices(_sensors)
 
 
@@ -58,3 +63,55 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
                 return _data["icon"]
 
         return super().icon
+
+
+class PowerToBattSensor(VEDirectEntity, SensorEntity):
+    """Calculated power sensor"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry, "PTB")
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = "W"
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Power to Battery"
+
+    @property
+    def native_value(self):
+        _v = self.coordinator.data["V"]["value"]
+        _i = self.coordinator.data["I"]["value"]
+
+        _zero = Decimal(0.0)
+
+        if _i < _zero:
+            return (_v * _i).quantize(Decimal("1.000"))
+
+        return Decimal(0.0)
+
+
+class PowerFromBattSensor(VEDirectEntity, SensorEntity):
+    """Calculated power sensor"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry, "PFB")
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = "W"
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Power from Battery"
+
+    @property
+    def native_value(self):
+        _v = self.coordinator.data["V"]["value"]
+        _i = self.coordinator.data["I"]["value"]
+
+        _zero = Decimal(0.0)
+
+        if _i > _zero:
+            return (_v * _i).quantize(Decimal("1.000"))
+
+        return Decimal(0.0)
