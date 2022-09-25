@@ -30,18 +30,11 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry, key):
         super().__init__(coordinator, config_entry, key)
-        if self.key in ("V", "VPV"):
-            self._attr_device_class = "voltage"
-            self._attr_native_unit_of_measurement = "V"
-        elif self.key in ("PPV", "H21", "H23"):
-            self._attr_device_class = "power"
-            self._attr_native_unit_of_measurement = "W"
-        elif self.key in ("I", "IL"):
-            self._attr_device_class = "current"
-            self._attr_native_unit_of_measurement = "A"
-        elif self.key in ("H19", "H20", "H22"):
-            self._attr_device_class = "energy"
-            self._attr_native_unit_of_measurement = "kWh"
+        _data = self.coordinator.data[self.key]
+        if "device_class" in _data.keys():
+            self._attr_device_class = _data["device_class"]
+        if "unit_meassurement" in _data.keys():
+            self._attr_native_unit_of_measurement = _data["unit_meassurement"]
 
     @property
     def name(self):
@@ -51,7 +44,8 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        if self.key in ("V", "VPV"):
-            return self.coordinator.data[self.key]["value"] / Decimal(1000)
+        _data = self.coordinator.data[self.key]
+        if isinstance(_data["value"], Decimal):
+            return _data["value"] * _data["unit_conversion"]
 
         return self.coordinator.data[self.key]["value"]
