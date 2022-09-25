@@ -291,7 +291,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     def simulate_buffer(self):
         """return simulated buffer"""
         _buff = []
-        for _key in self.data.keys():
+        for _key in list(self.data.keys()):
             if _key == "PID":
                 _buff.append(f"{_key}\t0xA060")
             elif _key == "FW":
