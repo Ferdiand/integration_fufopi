@@ -31,6 +31,41 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
+PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
+CS_VALUE_LIST = {
+    "0": "Off",
+    "2": "Fault",
+    "3": "Bulk",
+    "4": "Absorption",
+    "5": "Float",
+    "6": "Storage",
+    "7": "Equalize (manual)",
+    "9": "Inverting",
+    "11": "Power supply",
+    "245": "Starting-up",
+    "246": "Repeated absorption",
+    "247": "Auto equalize / Recondition",
+    "248": "BatterySafe",
+    "252": "External Control",
+}
+OR_VALUE_LIST = {
+    "0x00000001": "No input power",
+    "0x00000002": "Switched off (power switch)",
+    "0x00000004": "Switched off (device mode register) ",
+    "0x00000008": "Remote input",
+    "0x00000010": "Protection active ",
+    "0x00000020": "Paygo",
+    "0x00000040": "BMS",
+    "0x00000080": "Engine shutdown",
+    "0x00000100": "Analysing input voltage",
+}
+
+MPPT_VALUE_LIST = {
+    "0": "Off",
+    "1": "Voltage or current limited",
+    "2": "MPP Tracker active",
+}
+
 
 async def async_setup(hass: HomeAssistant, config: Config):
     """Set up this integration using YAML is not supported."""
@@ -96,8 +131,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "name": "Product ID",
                 "value": "",
                 "last_update": time.time(),
-                "value_list": {"0xA060": "SmartSolar MPPT 100|20 48V"},
-                "simu_value": f"{random.choice(self.data['PID']['value_list'].keys())}",
+                "value_list": PID_VALUE_LIST,
+                "simu_value": f"{random.choice(PID_VALUE_LIST.keys())}",
             },
             "FW": {
                 "name": "Firmware Version",
@@ -151,51 +186,22 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "name": "State of operation",
                 "value": "",
                 "last_update": time.time(),
-                "value_list": {
-                    "0": "Off",
-                    "2": "Fault",
-                    "3": "Bulk",
-                    "4": "Absorption",
-                    "5": "Float",
-                    "6": "Storage",
-                    "7": "Equalize (manual)",
-                    "9": "Inverting",
-                    "11": "Power supply",
-                    "245": "Starting-up",
-                    "246": "Repeated absorption",
-                    "247": "Auto equalize / Recondition",
-                    "248": "BatterySafe",
-                    "252": "External Control",
-                },
-                "simu_value": f"{random.choice(self.data['CS']['value_list'].keys())}",
+                "value_list": CS_VALUE_LIST,
+                "simu_value": f"{random.choice(CS_VALUE_LIST.keys())}",
             },
             "MPPT": {
                 "name": "Tracker operation mode",
                 "value": "",
                 "last_update": time.time(),
-                "value_list": {
-                    "0": "Off",
-                    "1": "Voltage or current limited",
-                    "2": "MPP Tracker active",
-                },
-                "simu_value": f"{random.choice(self.data['MPPT']['value_list'].keys())}",
+                "value_list": MPPT_VALUE_LIST,
+                "simu_value": f"{random.choice(MPPT_VALUE_LIST.keys())}",
             },
             "OR": {
                 "name": "Off Reason",
                 "value": "",
                 "last_update": time.time(),
-                "value_list": {
-                    "0x00000001": "No input power",
-                    "0x00000002": "Switched off (power switch)",
-                    "0x00000004": "Switched off (device mode register) ",
-                    "0x00000008": "Remote input",
-                    "0x00000010": "Protection active ",
-                    "0x00000020": "Paygo",
-                    "0x00000040": "BMS",
-                    "0x00000080": "Engine shutdown",
-                    "0x00000100": "Analysing input voltage",
-                },
-                "simu_value": f"{random.choice(self.data['OR']['value_list'].keys())}",
+                "value_list": OR_VALUE_LIST,
+                "simu_value": f"{random.choice(OR_VALUE_LIST.keys())}",
             },
             "LOAD": {"value": "", "last_update": time.time()},
             "H19": {
