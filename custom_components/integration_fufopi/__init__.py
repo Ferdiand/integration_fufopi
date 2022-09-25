@@ -132,19 +132,16 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": "",
                 "last_update": time.time(),
                 "value_list": PID_VALUE_LIST,
-                "simu_value": "0xA060",
             },
             "FW": {
                 "name": "Firmware Version",
                 "value": "",
                 "last_update": time.time(),
-                "simu_value": "156",
             },
             "SER#": {
                 "name": "Serial Number",
                 "value": "",
                 "last_update": time.time(),
-                "simu_value": "1234567890",
             },
             "V": {
                 "name": "Battery Voltage",
@@ -153,7 +150,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "V",
                 "state_class": "voltage",
-                "simu_value": f"{random.randrange(12000,14000)}",
             },
             "I": {
                 "name": "Battery Current",
@@ -162,7 +158,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "A",
                 "state_class": "current",
-                "simu_value": f"{random.randrange(-5000,5000)}",
             },
             "VPV": {
                 "name": "Panel Voltage",
@@ -171,7 +166,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "V",
                 "state_class": "voltage",
-                "simu_value": f"{random.randrange(0,20000)}",
             },
             "PPV": {
                 "name": "Panel Power",
@@ -180,28 +174,24 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
                 "state_class": "power",
-                "simu_value": f"{random.randrange(0,100)}",
             },
             "CS": {
                 "name": "State of operation",
                 "value": "",
                 "last_update": time.time(),
                 "value_list": CS_VALUE_LIST,
-                "simu_value": f"{random.choice(CS_VALUE_LIST.keys())}",
             },
             "MPPT": {
                 "name": "Tracker operation mode",
                 "value": "",
                 "last_update": time.time(),
                 "value_list": MPPT_VALUE_LIST,
-                "simu_value": f"{random.choice(MPPT_VALUE_LIST.keys())}",
             },
             "OR": {
                 "name": "Off Reason",
                 "value": "",
                 "last_update": time.time(),
                 "value_list": OR_VALUE_LIST,
-                "simu_value": f"{random.choice(OR_VALUE_LIST.keys())}",
             },
             "LOAD": {"value": "", "last_update": time.time()},
             "H19": {
@@ -211,7 +201,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
                 "state_class": "energy",
-                "simu_value": f"{random.randrange(0,5000)}",
             },
             "H20": {
                 "name": "Yield today",
@@ -220,7 +209,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
                 "state_class": "energy",
-                "simu_value": f"{random.randrange(0,5000)}",
             },
             "H22": {
                 "name": "Yield yesterday",
@@ -229,7 +217,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
                 "state_class": "energy",
-                "simu_value": f"{random.randrange(0,5000)}",
             },
             "H21": {
                 "name": "Max power today",
@@ -238,7 +225,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
                 "state_class": "power",
-                "simu_value": f"{random.randrange(0,100)}",
             },
             "H23": {
                 "name": "Max power yesterday",
@@ -247,19 +233,16 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
                 "state_class": "power",
-                "simu_value": f"{random.randrange(0,100)}",
             },
             "HSDS": {
                 "name": "Day seq number",
                 "value": "",
                 "last_update": time.time(),
-                "simu_value": f"{random.randrange(0,100)}",
             },
             "Checksum": {
                 "name": "CheckSum",
                 "value": "",
                 "last_update": time.time(),
-                "simu_value": "b",
             },
             "IL": {
                 "name": "Load Current",
@@ -268,7 +251,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "W",
                 "state_class": "power",
-                "simu_value": f"{random.randrange(0,100)}",
             },
         }
 
