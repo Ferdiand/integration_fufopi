@@ -23,7 +23,7 @@ class VEDirectEntity(CoordinatorEntity):
             "identifiers": {(DOMAIN, self.coordinator.data["SER#"]["value"])},
             "name": PID_VALUE_LIST[self.coordinator.data["PID"]["value"]],
             "model": self.coordinator.data["SER#"]["value"],
-            "manufacturer": "Victron",
+            "manufacturer": "Victron Energy",
         }
 
     @property

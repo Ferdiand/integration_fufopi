@@ -21,9 +21,9 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
     def __init__(self, coordinator, config_entry, key):
         super().__init__(coordinator, config_entry, key)
         _data = self.coordinator.data[self.key]
-        if "device_class" in _data.keys():
+        if "device_class" in list(_data.keys()):
             self._attr_device_class = _data["device_class"]
-        if "unit_meassurement" in _data.keys():
+        if "unit_meassurement" in list(_data.keys()):
             self._attr_native_unit_of_measurement = _data["unit_meassurement"]
 
     @property
@@ -37,5 +37,8 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         _data = self.coordinator.data[self.key]
         if isinstance(_data["value"], Decimal):
             return _data["value"] * _data["unit_conversion"]
+
+        if "value_list" in list(_data.keys()):
+            return _data["value_list"][_data["value"]]
 
         return self.coordinator.data[self.key]["value"]
