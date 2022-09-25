@@ -17,6 +17,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     _sensors.append(PowerFromBattSensor(coordinator, entry))
     _sensors.append(PowerToBattSensor(coordinator, entry))
+    _sensors.append(LoadPowerSensor(coordinator, entry))
 
     async_add_devices(_sensors)
 
@@ -80,13 +81,19 @@ class PowerToBattSensor(VEDirectEntity, SensorEntity):
 
     @property
     def native_value(self):
-        _v = self.coordinator.data["V"]["value"]
-        _i = self.coordinator.data["I"]["value"]
+        _v = (
+            self.coordinator.data["V"]["value"]
+            * self.coordinator.data["V"]["unit_conversion"]
+        )
+        _i = (
+            self.coordinator.data["I"]["value"]
+            * self.coordinator.data["I"]["unit_conversion"]
+        )
 
         _zero = Decimal(0.0)
 
         if _i < _zero:
-            return (_v * _i).quantize(Decimal("1.000"))
+            return (_v * _i * Decimal(-1.0)).quantize(Decimal("1.000"))
 
         return Decimal(0.0)
 
@@ -106,8 +113,14 @@ class PowerFromBattSensor(VEDirectEntity, SensorEntity):
 
     @property
     def native_value(self):
-        _v = self.coordinator.data["V"]["value"]
-        _i = self.coordinator.data["I"]["value"]
+        _v = (
+            self.coordinator.data["V"]["value"]
+            * self.coordinator.data["V"]["unit_conversion"]
+        )
+        _i = (
+            self.coordinator.data["I"]["value"]
+            * self.coordinator.data["I"]["unit_conversion"]
+        )
 
         _zero = Decimal(0.0)
 
@@ -115,3 +128,30 @@ class PowerFromBattSensor(VEDirectEntity, SensorEntity):
             return (_v * _i).quantize(Decimal("1.000"))
 
         return Decimal(0.0)
+
+
+class LoadPowerSensor(VEDirectEntity, SensorEntity):
+    """Calculated power sensor"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry, "PL")
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = "W"
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Load power"
+
+    @property
+    def native_value(self):
+        _v = (
+            self.coordinator.data["V"]["value"]
+            * self.coordinator.data["V"]["unit_conversion"]
+        )
+        _i = (
+            self.coordinator.data["IL"]["value"]
+            * self.coordinator.data["IL"]["unit_conversion"]
+        )
+
+        return (_v * _i).quantize(Decimal("1.000"))
