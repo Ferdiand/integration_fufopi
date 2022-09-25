@@ -20,6 +20,12 @@ from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers.typing import StateType
+from homeassistant.components.sensor import (
+    DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_VOLTAGE,
+    DEVICE_CLASS_CURRENT,
+)
 
 from .const import (
     DOMAIN,
@@ -118,7 +124,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "V",
-                "state_class": "voltage",
+                "device_class": DEVICE_CLASS_VOLTAGE,
             },
             "I": {
                 "name": "Battery Current",
@@ -126,7 +132,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "A",
-                "state_class": "current",
+                "device_class": DEVICE_CLASS_CURRENT,
             },
             "VPV": {
                 "name": "Panel Voltage",
@@ -134,7 +140,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.001),
                 "unit_meassurement": "V",
-                "state_class": "voltage",
+                "device_class": DEVICE_CLASS_VOLTAGE,
             },
             "PPV": {
                 "name": "Panel Power",
@@ -142,7 +148,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
-                "state_class": "power",
+                "device_class": DEVICE_CLASS_POWER,
             },
             "CS": {
                 "name": "State of operation",
@@ -168,7 +174,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
-                "state_class": "energy",
+                "device_class": DEVICE_CLASS_ENERGY,
             },
             "H20": {
                 "name": "Yield today",
@@ -176,7 +182,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
-                "state_class": "energy",
+                "device_class": DEVICE_CLASS_ENERGY,
             },
             "H22": {
                 "name": "Yield yesterday",
@@ -184,7 +190,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.01),
                 "unit_meassurement": "kWh",
-                "state_class": "energy",
+                "device_class": DEVICE_CLASS_ENERGY,
             },
             "H21": {
                 "name": "Max power today",
@@ -192,7 +198,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
-                "state_class": "power",
+                "device_class": DEVICE_CLASS_POWER,
             },
             "H23": {
                 "name": "Max power yesterday",
@@ -200,7 +206,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "unit_conversion": Decimal(1),
                 "unit_meassurement": "W",
-                "state_class": "power",
+                "device_class": DEVICE_CLASS_POWER,
             },
             "HSDS": {
                 "name": "Day seq number",
@@ -217,8 +223,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": Decimal(),
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.001),
-                "unit_meassurement": "W",
-                "state_class": "power",
+                "unit_meassurement": "A",
+                "state_class": "cuurent",
             },
         }
 

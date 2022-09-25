@@ -36,8 +36,9 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         """Return the native value of the sensor."""
         _data = self.coordinator.data[self.key]
         if isinstance(_data["value"], Decimal):
+            _decimal = Decimal("0", prec=3)
             _decimal = _data["value"] * _data["unit_conversion"]
-            _decimal = _decimal.quantize(Decimal("1.000"))
+            # _decimal = _decimal.quantize(Decimal("1.000"))
             self.coordinator.logger.warning(f"Decimal value {self.key} ::: {_decimal}")
             return _decimal
 
