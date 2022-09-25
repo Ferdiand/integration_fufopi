@@ -196,7 +196,7 @@ class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
                 if _v_batt < Decimal(_v):
                     _v_last, _percent_last = self.scale[_i - 1]
                     _m = (_percent - _percent_last) / (_v - _v_last)
-                    _n = _m * _percent_last - _v_last
+                    _n = _m * _v_last - _percent_last
 
                     return Decimal((_v * _m) - _n).quantize(Decimal("1.0"))
 
