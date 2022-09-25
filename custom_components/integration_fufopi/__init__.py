@@ -310,7 +310,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 _buff.append(f"{_key}\t{random.randrange(0,20000)}")
             elif "value_list" in list(self.data[_key].keys()):
                 _list = list(self.data[_key]["value_list"].keys())
-                self.logger.warning(f"value list: {_list}")
+                self.logger.warning(f"value list:{_key} ::: {_list}")
                 # _buff.append(
                 #    f"{_key}\t{random.choice(list(self.data[_key]['value_list'].keys()))}"
                 # )
