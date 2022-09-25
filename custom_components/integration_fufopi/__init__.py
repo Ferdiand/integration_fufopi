@@ -13,6 +13,7 @@ import logging
 from unicodedata import decimal
 import serial
 import time
+import random
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
@@ -183,7 +184,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 _key = _field[0]
                 _value = _field[1]
                 if _key in _data_cpy.keys():
-                    if _data_cpy[_key]["value"] is Decimal:
+                    if isinstance(_data_cpy[_key]["value"], Decimal):
                         _data_cpy[_key]["value"] = Decimal(_value)
                     else:
                         _data_cpy[_key]["value"] = _value
