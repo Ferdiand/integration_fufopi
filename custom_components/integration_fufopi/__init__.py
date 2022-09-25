@@ -311,7 +311,24 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         """return simulated buffer"""
         _buff = []
         for _key in self.data.keys():
-            _buff.append(f"{_key}\t{self.data[_key]['simu_value']}")
+            if _key == "PID":
+                _buff.append(f"{_key}\t0xA060")
+            elif _key == "FW":
+                _buff.append(f"{_key}\t156")
+            elif _key == "SER#":
+                _buff.append(f"{_key}\t1234567890")
+            elif _key == "V":
+                _buff.append(f"{_key}\t{random.randrange(12000,14000)}")
+            elif _key in ("I", "IL"):
+                _buff.append(f"{_key}\t{random.randrange(-5000,5000)}")
+            elif _key == "VPV":
+                _buff.append(f"{_key}\t{random.randrange(0,20000)}")
+            elif _key == "PPV":
+                _buff.append(f"{_key}\t{random.randrange(0,20000)}")
+            elif _key in ("H19", "H20", "H21", "H22", "H23"):
+                _buff.append(f"{_key}\t{random.randrange(0,20000)}")
+            elif "value_list" in self.data[_key].keys():
+                _buff.append(f"{_key}\t{self.data[_key].keys()[-1]}")
         return _buff
 
 
