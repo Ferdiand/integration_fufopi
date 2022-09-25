@@ -18,6 +18,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.typing import StateType
 
 from .const import (
     DOMAIN,
@@ -126,18 +127,45 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
             },
             "CS": {"value": "", "last_update": time.time()},
-            "MPPT": {"value": "", "last_update": time.time()},
+            "MPPT": {
+                "value": StateType,
+                "last_update": time.time(),
+            },
             "OR": {"value": "", "last_update": time.time()},
             "ERR": {"value": "", "last_update": time.time()},
             "LOAD": {"value": "", "last_update": time.time()},
-            "H19": {"value": "", "last_update": time.time()},
-            "H20": {"value": "", "last_update": time.time()},
-            "H21": {"value": "", "last_update": time.time()},
-            "H22": {"value": "", "last_update": time.time()},
-            "H23": {"value": "", "last_update": time.time()},
+            "H19": {
+                "name": "Yield total",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "H20": {
+                "name": "Yield today",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "H22": {
+                "name": "Yield yesterday",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "H21": {
+                "name": "Max power today",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
+            "H23": {
+                "name": "Max power yesterday",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
             "HSDS": {"value": "", "last_update": time.time()},
             "Checksum": {"value": "", "last_update": time.time()},
-            "IL": {"value": "", "last_update": time.time()},
+            "IL": {
+                "name": "Load Current",
+                "value": Decimal(),
+                "last_update": time.time(),
+            },
         }
 
     async def _async_update_data(self):
