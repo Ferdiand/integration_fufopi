@@ -1,5 +1,6 @@
 """Sensor platform for integration_blueprint."""
 from decimal import Decimal
+from unicodedata import decimal
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
@@ -36,7 +37,8 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         """Return the native value of the sensor."""
         _data = self.coordinator.data[self.key]
         if isinstance(_data["value"], Decimal):
-            _decimal = Decimal("0", prec=3)
+            decimal.getcontext().prec = 3
+            _decimal = Decimal()
             _decimal = _data["value"] * _data["unit_conversion"]
             # _decimal = _decimal.quantize(Decimal("1.000"))
             self.coordinator.logger.warning(f"Decimal value {self.key} ::: {_decimal}")
