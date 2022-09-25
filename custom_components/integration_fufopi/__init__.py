@@ -193,7 +193,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "value_list": OR_VALUE_LIST,
             },
-            "LOAD": {"value": "", "last_update": time.time()},
             "H19": {
                 "name": "Yield total",
                 "value": Decimal(),
@@ -310,7 +309,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             elif _key in ("H19", "H20", "H21", "H22", "H23"):
                 _buff.append(f"{_key}\t{random.randrange(0,20000)}")
             elif "value_list" in self.data[_key].keys():
-                _buff.append(f"{_key}\t{self.data[_key].keys()[-1]}")
+                _buff.append(f"{_key}\t{self.data[_key]['value_list'].keys()[-1]}")
         return _buff
 
 
