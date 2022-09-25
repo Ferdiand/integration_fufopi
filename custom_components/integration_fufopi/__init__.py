@@ -210,7 +210,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             "PID\t0x000",
             "FW\t156",
             "SER#\t453646543643",
-            "V\t12000",
+            f"V\t{random.randrange(12000,14000)}",
             "I\t10000",
             "VPV\t19000",
             "PPV\t50",
