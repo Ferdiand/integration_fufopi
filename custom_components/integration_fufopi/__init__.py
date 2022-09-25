@@ -25,46 +25,15 @@ from .const import (
     DOMAIN,
     PLATFORMS,
     STARTUP_MESSAGE,
+    PID_VALUE_LIST,
+    CS_VALUE_LIST,
+    MPPT_VALUE_LIST,
+    OR_VALUE_LIST,
 )
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
-
-PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
-CS_VALUE_LIST = {
-    "0": "Off",
-    "2": "Fault",
-    "3": "Bulk",
-    "4": "Absorption",
-    "5": "Float",
-    "6": "Storage",
-    "7": "Equalize (manual)",
-    "9": "Inverting",
-    "11": "Power supply",
-    "245": "Starting-up",
-    "246": "Repeated absorption",
-    "247": "Auto equalize / Recondition",
-    "248": "BatterySafe",
-    "252": "External Control",
-}
-OR_VALUE_LIST = {
-    "0x00000001": "No input power",
-    "0x00000002": "Switched off (power switch)",
-    "0x00000004": "Switched off (device mode register) ",
-    "0x00000008": "Remote input",
-    "0x00000010": "Protection active ",
-    "0x00000020": "Paygo",
-    "0x00000040": "BMS",
-    "0x00000080": "Engine shutdown",
-    "0x00000100": "Analysing input voltage",
-}
-
-MPPT_VALUE_LIST = {
-    "0": "Off",
-    "1": "Voltage or current limited",
-    "2": "MPP Tracker active",
-}
 
 
 async def async_setup(hass: HomeAssistant, config: Config):
@@ -310,7 +279,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 _buff.append(f"{_key}\t{random.randrange(0,20000)}")
             elif "value_list" in list(self.data[_key].keys()):
                 _list = list(self.data[_key]["value_list"].keys())
-                self.logger.warning(f"value list:{_key} ::: {_list}")
+                # self.logger.warning(f"value list:{_key} ::: {_list}")
                 _buff.append(f"{_key}\t{random.choice(_list)}")
         return _buff
 

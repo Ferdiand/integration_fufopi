@@ -1,7 +1,7 @@
 """BlueprintEntity class"""
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, NAME, VERSION, ATTRIBUTION
+from .const import DOMAIN, PID_VALUE_LIST, VERSION, ATTRIBUTION
 
 
 class VEDirectEntity(CoordinatorEntity):
@@ -21,7 +21,7 @@ class VEDirectEntity(CoordinatorEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self.coordinator.data["SER#"]["value"])},
-            "name": self.coordinator.data["PID"]["value"],
+            "name": PID_VALUE_LIST[self.coordinator.data["PID"]["value"]],
             "model": self.coordinator.data["SER#"]["value"],
             "manufacturer": "Victron",
         }

@@ -9,20 +9,10 @@ from .entity import VEDirectEntity
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_devices(
-        [
-            IntegrationBlueprintSensor(coordinator, entry, "V"),
-            IntegrationBlueprintSensor(coordinator, entry, "VPV"),
-            IntegrationBlueprintSensor(coordinator, entry, "PPV"),
-            IntegrationBlueprintSensor(coordinator, entry, "I"),
-            IntegrationBlueprintSensor(coordinator, entry, "IL"),
-            IntegrationBlueprintSensor(coordinator, entry, "H19"),
-            IntegrationBlueprintSensor(coordinator, entry, "H20"),
-            IntegrationBlueprintSensor(coordinator, entry, "H21"),
-            IntegrationBlueprintSensor(coordinator, entry, "H22"),
-            IntegrationBlueprintSensor(coordinator, entry, "H23"),
-        ]
-    )
+    _sensors = []
+    for key in list(coordinator.data.keys()):
+        _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
+    async_add_devices(_sensors)
 
 
 class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
