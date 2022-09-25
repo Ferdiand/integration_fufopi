@@ -132,7 +132,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": "",
                 "last_update": time.time(),
                 "value_list": PID_VALUE_LIST,
-                "simu_value": f"{random.choice(PID_VALUE_LIST.keys())}",
+                "simu_value": "0xA060",
             },
             "FW": {
                 "name": "Firmware Version",
