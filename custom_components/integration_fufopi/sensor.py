@@ -54,7 +54,7 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
     def icon(self) -> str | None:
         _data = self.coordinator.data[self.key]
         if not isinstance(_data["value"], Decimal):
-            if "value_list" in list(_data.keys()):
+            if "icon" in list(_data.keys()):
                 return _data["icon"]
 
         return super().icon
