@@ -198,6 +198,6 @@ class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
                     _m = (_percent - _percent_last) / (_v - _v_last)
                     _n = _m * _v_last - _percent_last
 
-                    return Decimal((_v * _m) - _n).quantize(Decimal("1.0"))
+                    return Decimal((_v_batt * _m) - _n).quantize(Decimal("1.0"))
 
         return Decimal(0)
