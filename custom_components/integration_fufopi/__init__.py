@@ -242,6 +242,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "device_class": DEVICE_CLASS_POWER,
             },
         }
+        self.clima_data = {}
 
     async def _async_update_data(self):
         """Update data via library."""
@@ -268,10 +269,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             else:
                 self.logger.warning(f"Field structure not valid: {_field}")
 
-        _clima = self.clima.read()
-        self.logger.warning(f"lectura del clima: {_clima}")
-        for key, value in _clima:
-            _data_cpy[key] = value
+        self.clima_data = self.clima.read()
+        self.logger.warning(f"lectura del clima: {self.clima_data}")
 
         return _data_cpy
 

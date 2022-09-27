@@ -219,7 +219,7 @@ class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["temp_c"]
+        return self.coordinator.clima_data["temp_c"]
 
     @property
     def unique_id(self):
@@ -239,7 +239,7 @@ class ClimaHumiditySensor(ClimaDHTEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["humidity"]
+        return self.coordinator.clima_data["humidity"]
 
     @property
     def unique_id(self):
