@@ -7,7 +7,9 @@
   "version": "0.0.0",
   "config_flow": true,
   "requirements": [
-    "pyserial"
+    "pyserial",
+    "pigpio",
+    "pigpio-dht"
   ],
   "codeowners": [
     "@ferdiand"

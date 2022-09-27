@@ -10,9 +10,9 @@ from pigpio import OUTPUT, pi
 class RelayBoardPigPio:
     """PigPio relay board class"""
 
-    def __init__(self) -> None:
+    def __init__(self, pi) -> None:
         # Initialite pigpio pi
-        self.pig = pi("172.30.33.1")
+        self.pig = pi
         self.relay = [
             RelayPigPio(23, self.pig, True),
             RelayPigPio(24, self.pig, True),

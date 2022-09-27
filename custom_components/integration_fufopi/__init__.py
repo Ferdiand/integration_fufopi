@@ -14,7 +14,8 @@ from unicodedata import decimal
 import serial
 import time
 import random
-
+from pigpio import pi
+from pigpio_dht import DHT22
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
@@ -97,7 +98,11 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self.relay_board = RelayBoardPigPio()
+        self.pi = pi("172.30.33.1")
+
+        self.relay_board = RelayBoardPigPio(pi=self.pi)
+
+        self.clima = DHT22(18, pi=self.pi)
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
@@ -262,6 +267,9 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                     self.logger.warning(f"Key not defined {_field}")
             else:
                 self.logger.warning(f"Field structure not valid: {_field}")
+
+        _clima = self.clima.read()
+        self.logger.warning(f"lectura del clima: {_clima}")
 
         return _data_cpy
 
