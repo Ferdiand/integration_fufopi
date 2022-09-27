@@ -270,6 +270,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
 
         _clima = self.clima.read()
         self.logger.warning(f"lectura del clima: {_clima}")
+        for key, value in _clima:
+            _data_cpy[key] = value
 
         return _data_cpy
 

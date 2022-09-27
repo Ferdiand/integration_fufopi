@@ -6,10 +6,12 @@ from homeassistant.components.sensor import (
     SensorEntity,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_HUMIDITY,
 )
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
-from .entity import VEDirectEntity
+from .entity import VEDirectEntity, ClimaDHTEntity
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -203,3 +205,43 @@ class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
                     )
 
         return Decimal(0)
+
+
+class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_device_class = DEVICE_CLASS_TEMPERATURE
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Temperatura"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["temp_c"]
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self.config_entry.entry_id + "temp"
+
+
+class ClimaHumiditySensor(ClimaDHTEntity, SensorEntity):
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_device_class = DEVICE_CLASS_HUMIDITY
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return "Humidity"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["humidity"]
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self.config_entry.entry_id + "hum"
