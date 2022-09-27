@@ -15,11 +15,12 @@ import serial
 import time
 import random
 
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers.typing import StateType
+from .relay_board import RelayBoardPigPio
 from homeassistant.components.sensor import (
     DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
@@ -69,6 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
+    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "switch"))
 
     # for platform in PLATFORMS:
     #    if entry.options.get(platform, True):
@@ -94,6 +96,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         update_interval: timedelta,
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
+
+        self.relay_board = RelayBoardPigPio()
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
