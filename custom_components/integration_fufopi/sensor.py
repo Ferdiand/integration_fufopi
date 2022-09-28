@@ -26,6 +26,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(LoadPowerSensor(coordinator, entry))
     _sensors.append(BatteryPerCentSensor(coordinator, entry))
 
+    _sensors.append(ClimaTemperatureSensor(coordinator, entry))
+    _sensors.append(ClimaHumiditySensor(coordinator, entry))
+
     async_add_devices(_sensors)
 
 
@@ -99,7 +102,7 @@ class PowerToBattSensor(VEDirectEntity, SensorEntity):
 
         _zero = Decimal(0.0)
 
-        if _i < _zero:
+        if _i > _zero:
             return (_v * _i * Decimal(-1.0)).quantize(Decimal("1.000"))
 
         return Decimal(0.0)
@@ -131,7 +134,7 @@ class PowerFromBattSensor(VEDirectEntity, SensorEntity):
 
         _zero = Decimal(0.0)
 
-        if _i > _zero:
+        if _i < _zero:
             return (_v * _i).quantize(Decimal("1.000"))
 
         return Decimal(0.0)

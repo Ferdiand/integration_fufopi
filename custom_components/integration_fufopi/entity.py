@@ -20,9 +20,9 @@ class VEDirectEntity(CoordinatorEntity):
     @property
     def device_info(self):
         return {
-            "identifiers": {DOMAIN, "12345678"},
+            "identifiers": {DOMAIN, "HQ2129WD7QV"},
             "name": "SmartSolar MPPT 100|20 48V",
-            "model": "12345678",
+            "model": "HQ2129WD7QV",
             "manufacturer": "Victron Energy",
         }
 
