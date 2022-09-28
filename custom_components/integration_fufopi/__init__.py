@@ -98,7 +98,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self.pi = pi("172.30.33.1")
+        self.pi = pi("172.30.33.0")
 
         self.relay_board = RelayBoardPigPio(pi=self.pi)
 
