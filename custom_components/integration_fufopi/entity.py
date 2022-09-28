@@ -20,9 +20,9 @@ class VEDirectEntity(CoordinatorEntity):
     @property
     def device_info(self):
         return {
-            "identifiers": {(DOMAIN, self.coordinator.data["SER#"]["value"])},
-            "name": PID_VALUE_LIST[self.coordinator.data["PID"]["value"]],
-            "model": self.coordinator.data["SER#"]["value"],
+            "identifiers": {DOMAIN, "12345678"},
+            "name": "SmartSolar MPPT 100|20 48V",
+            "model": "12345678",
             "manufacturer": "Victron Energy",
         }
 

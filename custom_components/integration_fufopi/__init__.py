@@ -61,10 +61,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         name="Victron Solar",
         update_interval=timedelta(seconds=2),
     )
-    await coordinator.async_refresh()
+    # await coordinator.async_refresh()
 
-    if not coordinator.last_update_success or not coordinator.config_ready():
-        raise ConfigEntryNotReady
+    # if not coordinator.last_update_success or not coordinator.config_ready():
+    #    raise ConfigEntryNotReady
 
     # coordinator.platforms.append("sensor")
 
