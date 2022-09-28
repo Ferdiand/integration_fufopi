@@ -269,8 +269,11 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             else:
                 self.logger.warning(f"Field structure not valid: {_field}")
 
-        self.clima_data = self.clima.read()
-        self.logger.warning(f"lectura del clima: {self.clima_data}")
+        try:
+            self.clima_data = self.clima.read()
+            self.logger.warning(f"lectura del clima: {self.clima_data}")
+        except:
+            self.logger.warning("No se ha podido leer el clima")
 
         return _data_cpy
 
