@@ -249,7 +249,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         _data_cpy = {}
         _data_cpy = self.data
         if self.simulation is False:
-            _buffer = self._serial.read_all().decode().split("\r\n")
+            _buffer = self._serial.decode("ascii", "ignore").split("\r\n")
         else:
             _buffer = self.simulate_buffer()
         self.logger.warning(f"{_buffer}")
