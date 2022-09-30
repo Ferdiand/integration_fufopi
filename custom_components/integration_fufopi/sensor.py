@@ -8,6 +8,7 @@ from homeassistant.components.sensor import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_HUMIDITY,
+    TEMP_CELSIUS,
 )
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
@@ -211,9 +212,12 @@ class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
 
 
 class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
+    """Tempreature sensor"""
+
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_TEMPERATURE
+        self._attr_native_unit_of_measurement = TEMP_CELSIUS
 
     @property
     def name(self):
@@ -231,9 +235,12 @@ class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
 
 
 class ClimaHumiditySensor(ClimaDHTEntity, SensorEntity):
+    """Humidity sensor"""
+
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_HUMIDITY
+        self._attr_native_unit_of_measurement = "%"
 
     @property
     def name(self):

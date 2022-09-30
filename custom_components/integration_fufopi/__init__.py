@@ -72,6 +72,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "switch"))
+    hass.async_add_job(
+        hass.config_entries.async_forward_entry_setup(entry, "binary_Sensor")
+    )
 
     # for platform in PLATFORMS:
     #    if entry.options.get(platform, True):
@@ -258,7 +261,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             if len(_field) > 1:
                 _key = _field[0]
                 _value = _field[1]
-                if _key in _data_cpy.keys():
+                if _key in list(_data_cpy.keys()):
                     if isinstance(_data_cpy[_key]["value"], Decimal):
                         _data_cpy[_key]["value"] = Decimal(_value)
                     else:
