@@ -135,7 +135,7 @@ class PowerFromBattSensor(VEDirectEntity, SensorEntity):
         _zero = Decimal(0.0)
 
         if _i < _zero:
-            return (_v * _i * Decimal(-1).quantize(Decimal("1.000"))
+            return (_v * _i * Decimal(-1)).quantize(Decimal("1.000"))
 
         return Decimal(0.0)
 
