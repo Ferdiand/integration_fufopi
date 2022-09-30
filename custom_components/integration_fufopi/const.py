@@ -57,6 +57,7 @@ CS_VALUE_LIST = {
     "252": "External Control",
 }
 OR_VALUE_LIST = {
+    "0x00000000": "No reason", 
     "0x00000001": "No input power",
     "0x00000002": "Switched off (power switch)",
     "0x00000004": "Switched off (device mode register) ",
