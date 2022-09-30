@@ -73,7 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "switch"))
     hass.async_add_job(
-        hass.config_entries.async_forward_entry_setup(entry, "binary_Sensor")
+        hass.config_entries.async_forward_entry_setup(entry, "binary_sensor")
     )
 
     # for platform in PLATFORMS:

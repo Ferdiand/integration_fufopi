@@ -58,8 +58,6 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
             _decimal = (_data["value"] * _data["unit_conversion"]).quantize(
                 Decimal("1.000")
             )
-            # _decimal = _decimal.quantize(Decimal("1.000"))
-            self.coordinator.logger.warning(f"Decimal value {self.key} ::: {_decimal}")
             return _decimal
 
         if "value_list" in list(_data.keys()):
