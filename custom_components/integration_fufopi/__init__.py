@@ -21,6 +21,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from .battery import BatteryCoordinator
 from .relay_board import RelayBoardPigPio
 from homeassistant.components.sensor import (
     DEVICE_CLASS_ENERGY,
@@ -107,6 +108,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
 
         self.clima = DHT22(18, pi=self.pi)
 
+        self.batt = BatteryCoordinator()
+
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
             self.simulation = False
@@ -132,22 +135,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value": "",
                 "last_update": time.time(),
                 "icon": "mdi:music-accidental-sharp",
-            },
-            "V": {
-                "name": "Battery Voltage",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.001),
-                "unit_meassurement": "V",
-                "device_class": DEVICE_CLASS_VOLTAGE,
-            },
-            "I": {
-                "name": "Battery Current",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.001),
-                "unit_meassurement": "A",
-                "device_class": DEVICE_CLASS_CURRENT,
             },
             "VPV": {
                 "name": "Panel Voltage",
@@ -261,12 +248,15 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             if len(_field) > 1:
                 _key = _field[0]
                 _value = _field[1]
-                if _key in list(_data_cpy.keys()):
+                if _key is "V":
+                    self.batt.voltage = _value
+                elif _key is "I":
+                    self.batt.current = _value
+                elif _key in list(_data_cpy.keys()):
                     if isinstance(_data_cpy[_key]["value"], Decimal):
                         _data_cpy[_key]["value"] = Decimal(_value)
                     else:
                         _data_cpy[_key]["value"] = _value
-                    _data_cpy[_key]["last_update"] = time.time()
                 else:
                     self.logger.warning(f"Key not defined {_field}")
             else:

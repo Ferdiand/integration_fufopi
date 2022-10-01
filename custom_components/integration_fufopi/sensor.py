@@ -5,7 +5,6 @@ from unicodedata import decimal
 from homeassistant.components.sensor import (
     SensorEntity,
     DEVICE_CLASS_POWER,
-    DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_HUMIDITY,
     TEMP_CELSIUS,
@@ -13,6 +12,13 @@ from homeassistant.components.sensor import (
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
 from .entity import VEDirectEntity, ClimaDHTEntity
+from .battery import (
+    BatteryVoltageSensor,
+    BatteryCurrentSensor,
+    PowerFromBattSensor,
+    PowerToBattSensor,
+    BatteryPerCentSensor,
+)
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -22,10 +28,13 @@ async def async_setup_entry(hass, entry, async_add_devices):
     for key in list(coordinator.data.keys()):
         _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
 
+    _sensors.append(BatteryCurrentSensor(coordinator, entry))
+    _sensors.append(BatteryVoltageSensor(coordinator, entry))
     _sensors.append(PowerFromBattSensor(coordinator, entry))
     _sensors.append(PowerToBattSensor(coordinator, entry))
-    _sensors.append(LoadPowerSensor(coordinator, entry))
     _sensors.append(BatteryPerCentSensor(coordinator, entry))
+
+    _sensors.append(LoadPowerSensor(coordinator, entry))
 
     _sensors.append(ClimaTemperatureSensor(coordinator, entry))
     _sensors.append(ClimaHumiditySensor(coordinator, entry))
@@ -75,70 +84,6 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         return super().icon
 
 
-class PowerToBattSensor(VEDirectEntity, SensorEntity):
-    """Calculated power sensor"""
-
-    def __init__(self, coordinator, config_entry):
-        super().__init__(coordinator, config_entry, "PTB")
-        self._attr_device_class = DEVICE_CLASS_POWER
-        self._attr_native_unit_of_measurement = "W"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Power to Battery"
-
-    @property
-    def native_value(self):
-        _v = (
-            self.coordinator.data["V"]["value"]
-            * self.coordinator.data["V"]["unit_conversion"]
-        )
-        _i = (
-            self.coordinator.data["I"]["value"]
-            * self.coordinator.data["I"]["unit_conversion"]
-        )
-
-        _zero = Decimal(0.0)
-
-        if _i > _zero:
-            return (_v * _i).quantize(Decimal("1.000"))
-
-        return Decimal(0.0)
-
-
-class PowerFromBattSensor(VEDirectEntity, SensorEntity):
-    """Calculated power sensor"""
-
-    def __init__(self, coordinator, config_entry):
-        super().__init__(coordinator, config_entry, "PFB")
-        self._attr_device_class = DEVICE_CLASS_POWER
-        self._attr_native_unit_of_measurement = "W"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Power from Battery"
-
-    @property
-    def native_value(self):
-        _v = (
-            self.coordinator.data["V"]["value"]
-            * self.coordinator.data["V"]["unit_conversion"]
-        )
-        _i = (
-            self.coordinator.data["I"]["value"]
-            * self.coordinator.data["I"]["unit_conversion"]
-        )
-
-        _zero = Decimal(0.0)
-
-        if _i < _zero:
-            return (_v * _i * Decimal(-1)).quantize(Decimal("1.000"))
-
-        return Decimal(0.0)
-
-
 class LoadPowerSensor(VEDirectEntity, SensorEntity):
     """Calculated power sensor"""
 
@@ -164,49 +109,6 @@ class LoadPowerSensor(VEDirectEntity, SensorEntity):
         )
 
         return (_v * _i).quantize(Decimal("1.000"))
-
-
-class BatteryPerCentSensor(VEDirectEntity, SensorEntity):
-    """% of battery capacity"""
-
-    def __init__(self, coordinator, config_entry):
-        super().__init__(coordinator, config_entry, "BPC")
-        self._attr_device_class = DEVICE_CLASS_BATTERY
-
-        self.scale = [
-            (9000, 0.0),
-            (10000, 20.0),
-            (11000, 40.0),
-            (12000, 60.0),
-            (13000, 80.0),
-            (14000, 100.0),
-            (15000, 120.0),
-        ]
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Battery left"
-
-    @property
-    def native_value(self):
-        _v_batt = self.coordinator.data["V"]["value"]
-        if _v_batt >= Decimal(9000):
-            for _i in range(len(self.scale)):
-                _v, _percent = self.scale[_i]
-                if _v_batt == Decimal(_v):
-                    return Decimal(_percent)
-
-                if _v_batt < Decimal(_v):
-                    _v_last, _percent_last = self.scale[_i - 1]
-                    _m = (_percent - _percent_last) / (_v - _v_last)
-                    _n = _m * _v_last - _percent_last
-
-                    return Decimal((_v_batt * Decimal(_m)) - Decimal(_n)).quantize(
-                        Decimal("1.0")
-                    )
-
-        return Decimal(0)
 
 
 class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
