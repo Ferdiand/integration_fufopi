@@ -131,7 +131,7 @@ class SolarPanelCoordinator:
     @property
     def max_power_yesterday(self):
         """return max power yesterday in W"""
-        return self.max_power_yesterday.quantize(Decimal("1.000"))
+        return self._max_power_yesterday.quantize(Decimal("1.000"))
 
     @max_power_yesterday.setter
     def max_power_yesterday(self, new_value):
@@ -345,7 +345,7 @@ class SolarPanelProductionTotalSensor(SolarPanelEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return super().unique_id + "YT"
+        return super().unique_id + "YTT"
 
     @property
     def native_value(self):
