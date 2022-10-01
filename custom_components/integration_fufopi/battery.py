@@ -123,7 +123,7 @@ class BatterytEntity(CoordinatorEntity):
     @property
     def device_info(self):
         return {
-            "identifiers": {DOMAIN, "batt_model"},
+            "identifiers": {(DOMAIN, "batt_model")},
             "name": "Battery",
             "model": "batt_model",
             "manufacturer": "Eleksol",
@@ -245,7 +245,7 @@ class BatteryStateBinarySensor(BatterytEntity, BinarySensorEntity):
     @property
     def name(self):
         """Return the name of the binary_sensor."""
-        return f"Battery is charging"
+        return "Battery is charging"
 
     @property
     def is_on(self):
