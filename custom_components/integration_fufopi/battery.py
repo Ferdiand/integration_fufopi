@@ -257,6 +257,7 @@ class BatteryPerCentSensor(BatterytEntity, SensorEntity):
     """% of battery capacity"""
 
     def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_BATTERY
 
     @property
