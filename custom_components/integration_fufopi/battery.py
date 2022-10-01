@@ -106,7 +106,7 @@ class BatteryCoordinator:
         return x * _m - _n
 
 
-class BatterytEntity(CoordinatorEntity):
+class BatteryEntity(CoordinatorEntity):
     """VE Direct base entity"""
 
     def __init__(self, coordinator, config_entry):
@@ -139,7 +139,7 @@ class BatterytEntity(CoordinatorEntity):
         }
 
 
-class BatteryVoltageSensor(BatterytEntity, SensorEntity):
+class BatteryVoltageSensor(BatteryEntity, SensorEntity):
     """Battery voltage sensor"""
 
     def __init__(self, coordinator, config_entry):
@@ -160,7 +160,7 @@ class BatteryVoltageSensor(BatterytEntity, SensorEntity):
         return self._batt.voltage
 
 
-class BatteryCurrentSensor(BatterytEntity, SensorEntity):
+class BatteryCurrentSensor(BatteryEntity, SensorEntity):
     """Battery voltage sensor"""
 
     def __init__(self, coordinator, config_entry):
@@ -181,7 +181,7 @@ class BatteryCurrentSensor(BatterytEntity, SensorEntity):
         return self._batt.current
 
 
-class PowerToBattSensor(BatterytEntity, SensorEntity):
+class PowerToBattSensor(BatteryEntity, SensorEntity):
     """Calculated power sensor"""
 
     def __init__(self, coordinator, config_entry):
@@ -192,7 +192,7 @@ class PowerToBattSensor(BatterytEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return "Power to Battery"
+        return "Battery in power"
 
     @property
     def unique_id(self):
@@ -206,7 +206,7 @@ class PowerToBattSensor(BatterytEntity, SensorEntity):
         return Decimal(0)
 
 
-class PowerFromBattSensor(BatterytEntity, SensorEntity):
+class PowerFromBattSensor(BatteryEntity, SensorEntity):
     """Calculated power sensor"""
 
     def __init__(self, coordinator, config_entry):
@@ -217,7 +217,7 @@ class PowerFromBattSensor(BatterytEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return "Power from Battery"
+        return "Battery out power"
 
     @property
     def unique_id(self):
@@ -231,7 +231,7 @@ class PowerFromBattSensor(BatterytEntity, SensorEntity):
         return Decimal(0)
 
 
-class BatteryStateBinarySensor(BatterytEntity, BinarySensorEntity):
+class BatteryStateBinarySensor(BatteryEntity, BinarySensorEntity):
     """battery state binary_sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -253,12 +253,13 @@ class BatteryStateBinarySensor(BatterytEntity, BinarySensorEntity):
         return self._batt.is_charging
 
 
-class BatteryPerCentSensor(BatterytEntity, SensorEntity):
+class BatteryPerCentSensor(BatteryEntity, SensorEntity):
     """% of battery capacity"""
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_BATTERY
+        self._attr_native_unit_of_measurement = "%"
 
     @property
     def unique_id(self):

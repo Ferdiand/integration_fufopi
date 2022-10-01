@@ -19,6 +19,12 @@ from .battery import (
     PowerToBattSensor,
     BatteryPerCentSensor,
 )
+from .solar_panel import (
+    SolarPanelVoltageSensor,
+    SolarPanelCurrentSensor,
+    SolarPanelPowerSensor,
+    SolarPanelYieldTodaySensor,
+)
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -33,6 +39,11 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(PowerFromBattSensor(coordinator, entry))
     _sensors.append(PowerToBattSensor(coordinator, entry))
     _sensors.append(BatteryPerCentSensor(coordinator, entry))
+
+    _sensors.append(SolarPanelPowerSensor(coordinator, entry))
+    _sensors.append(SolarPanelVoltageSensor(coordinator, entry))
+    _sensors.append(SolarPanelCurrentSensor(coordinator, entry))
+    _sensors.append(SolarPanelYieldTodaySensor(coordinator, entry))
 
     _sensors.append(LoadPowerSensor(coordinator, entry))
 

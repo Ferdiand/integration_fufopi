@@ -22,6 +22,7 @@ from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from .battery import BatteryCoordinator
+from .solar_panel import SolarPanelCoordinator
 from .relay_board import RelayBoardPigPio
 from homeassistant.components.sensor import (
     DEVICE_CLASS_ENERGY,
@@ -109,6 +110,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         self.clima = DHT22(18, pi=self.pi)
 
         self.batt = BatteryCoordinator()
+        self.solar_panel = SolarPanelCoordinator()
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
@@ -136,22 +138,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "last_update": time.time(),
                 "icon": "mdi:music-accidental-sharp",
             },
-            "VPV": {
-                "name": "Panel Voltage",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.001),
-                "unit_meassurement": "V",
-                "device_class": DEVICE_CLASS_VOLTAGE,
-            },
-            "PPV": {
-                "name": "Panel Power",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(1.0),
-                "unit_meassurement": "W",
-                "device_class": DEVICE_CLASS_POWER,
-            },
             "CS": {
                 "name": "State of operation",
                 "value": "",
@@ -175,14 +161,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             },
             "H19": {
                 "name": "Yield total",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.01),
-                "unit_meassurement": "kWh",
-                "device_class": DEVICE_CLASS_ENERGY,
-            },
-            "H20": {
-                "name": "Yield today",
                 "value": Decimal(),
                 "last_update": time.time(),
                 "unit_conversion": Decimal(0.01),
@@ -252,6 +230,12 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                     self.batt.voltage = _value
                 elif _key is "I":
                     self.batt.current = _value
+                elif _key is "PPV":
+                    self.solar_panel.power = _value
+                elif _key is "VPV":
+                    self.solar_panel.voltage = _value
+                elif _key is "H20":
+                    self.solar_panel.yield_today = _value
                 elif _key in list(_data_cpy.keys()):
                     if isinstance(_data_cpy[_key]["value"], Decimal):
                         _data_cpy[_key]["value"] = Decimal(_value)
@@ -314,7 +298,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, platform)
-                for platform in ["sensor"]
+                for platform in ["sensor", "switch", "binary_sensor"]
             ]
         )
     )
