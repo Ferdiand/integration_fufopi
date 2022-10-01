@@ -23,7 +23,11 @@ from .solar_panel import (
     SolarPanelVoltageSensor,
     SolarPanelCurrentSensor,
     SolarPanelPowerSensor,
-    SolarPanelYieldTodaySensor,
+    SolarPanelProductionTodaySensor,
+    SolarPanelMaxPowerTodaySensor,
+    SolarPanelProductionYesterdaySensor,
+    SolarPanelMaxPowerYesterdaySensor,
+    SolarPanelProductionTotalSensor,
 )
 
 
@@ -43,7 +47,11 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(SolarPanelPowerSensor(coordinator, entry))
     _sensors.append(SolarPanelVoltageSensor(coordinator, entry))
     _sensors.append(SolarPanelCurrentSensor(coordinator, entry))
-    _sensors.append(SolarPanelYieldTodaySensor(coordinator, entry))
+    _sensors.append(SolarPanelProductionTodaySensor(coordinator, entry))
+    _sensors.append(SolarPanelMaxPowerTodaySensor(coordinator, entry))
+    _sensors.append(SolarPanelProductionYesterdaySensor(coordinator, entry))
+    _sensors.append(SolarPanelMaxPowerYesterdaySensor(coordinator, entry))
+    _sensors.append(SolarPanelProductionTotalSensor(coordinator, entry))
 
     _sensors.append(LoadPowerSensor(coordinator, entry))
 

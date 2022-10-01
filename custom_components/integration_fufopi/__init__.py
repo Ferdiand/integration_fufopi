@@ -159,38 +159,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                 "value_list": OR_VALUE_LIST,
                 "icon": "mdi:playlist-remove",
             },
-            "H19": {
-                "name": "Yield total",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.01),
-                "unit_meassurement": "kWh",
-                "device_class": DEVICE_CLASS_ENERGY,
-            },
-            "H22": {
-                "name": "Yield yesterday",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(0.01),
-                "unit_meassurement": "kWh",
-                "device_class": DEVICE_CLASS_ENERGY,
-            },
-            "H21": {
-                "name": "Max power today",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(1.0),
-                "unit_meassurement": "W",
-                "device_class": DEVICE_CLASS_POWER,
-            },
-            "H23": {
-                "name": "Max power yesterday",
-                "value": Decimal(),
-                "last_update": time.time(),
-                "unit_conversion": Decimal(1.0),
-                "unit_meassurement": "W",
-                "device_class": DEVICE_CLASS_POWER,
-            },
             "HSDS": {
                 "name": "Day seq number",
                 "value": "",
@@ -234,8 +202,16 @@ class VEDirectCoordinator(DataUpdateCoordinator):
                     self.solar_panel.power = _value
                 elif _key == "VPV":
                     self.solar_panel.voltage = _value
+                elif _key == "H19":
+                    self.solar_panel.yield_total = _value
                 elif _key == "H20":
                     self.solar_panel.yield_today = _value
+                elif _key == "H21":
+                    self.solar_panel.max_power_today = _value
+                elif _key == "H22":
+                    self.solar_panel.yield_yesterday = _value
+                elif _key == "H23":
+                    self.solar_panel.max_power_yesterday = _value
                 elif _key in list(_data_cpy.keys()):
                     if isinstance(_data_cpy[_key]["value"], Decimal):
                         _data_cpy[_key]["value"] = Decimal(_value)
