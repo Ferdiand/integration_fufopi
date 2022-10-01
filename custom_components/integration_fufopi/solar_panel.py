@@ -74,9 +74,9 @@ class SolarPanelCoordinator:
     def yield_today(self, new_value):
         if isinstance(new_value, str):
             ## value in 0.01 kWh
-            self._power = Decimal(new_value) * Decimal(0.01)
+            self._yield_today = Decimal(new_value) * Decimal(0.01)
         elif isinstance(new_value, Decimal):
-            self._power = new_value
+            self._yield_today = new_value
         else:
             raise ValueError
 

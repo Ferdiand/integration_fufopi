@@ -226,15 +226,15 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             if len(_field) > 1:
                 _key = _field[0]
                 _value = _field[1]
-                if _key is "V":
+                if _key == "V":
                     self.batt.voltage = _value
-                elif _key is "I":
+                elif _key == "I":
                     self.batt.current = _value
-                elif _key is "PPV":
+                elif _key == "PPV":
                     self.solar_panel.power = _value
-                elif _key is "VPV":
+                elif _key == "VPV":
                     self.solar_panel.voltage = _value
-                elif _key is "H20":
+                elif _key == "H20":
                     self.solar_panel.yield_today = _value
                 elif _key in list(_data_cpy.keys()):
                     if isinstance(_data_cpy[_key]["value"], Decimal):
