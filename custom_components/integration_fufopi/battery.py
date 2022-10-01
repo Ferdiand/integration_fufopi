@@ -123,9 +123,9 @@ class BatterytEntity(CoordinatorEntity):
     @property
     def device_info(self):
         return {
-            "identifiers": {DOMAIN, "HQ2129WD7QV"},
+            "identifiers": {DOMAIN, "batt_model"},
             "name": "Battery",
-            "model": "HQ2129WD7QV",
+            "model": "batt_model",
             "manufacturer": "Eleksol",
         }
 

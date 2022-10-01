@@ -99,10 +99,7 @@ class LoadPowerSensor(VEDirectEntity, SensorEntity):
 
     @property
     def native_value(self):
-        _v = (
-            self.coordinator.data["V"]["value"]
-            * self.coordinator.data["V"]["unit_conversion"]
-        )
+        _v = self.coordinator.batt.voltage
         _i = (
             self.coordinator.data["IL"]["value"]
             * self.coordinator.data["IL"]["unit_conversion"]
