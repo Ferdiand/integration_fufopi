@@ -115,8 +115,3 @@ class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     def name(self):
         """Return the name of the switch."""
         return f"Relay_{self.relay_index}"
-
-    @property
-    def is_on(self):
-        """Return true if the switch is on."""
-        return self.coordinator.relay_board.relay[self.relay_index].is_on
