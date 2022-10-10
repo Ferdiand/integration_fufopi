@@ -103,16 +103,14 @@ class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     def turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the switch."""
         self.coordinator.relay_board.relay[self.relay_index].relay_on()
+        self._attr_is_on = True
 
     def turn_off(self, **kwargs):  # pylint: disable=unused-argument
         """Turn off the switch."""
         self.coordinator.relay_board.relay[self.relay_index].relay_off()
+        self._attr_is_on = False
 
     @property
     def name(self):
         """Return the name of the switch."""
         return f"Relay_{self.relay_index}"
-
-    @property
-    def is_on(self) -> bool | None:
-        return is_on(self.coordinator.hass, self.entity_id)
