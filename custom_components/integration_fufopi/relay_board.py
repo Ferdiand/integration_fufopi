@@ -14,10 +14,10 @@ class RelayBoardPigPio:
         # Initialite pigpio pi
         self.pig = pi
         self.relay = [
+            RelayPigPio(18, self.pig, True),
             RelayPigPio(23, self.pig, True),
-            RelayPigPio(24, self.pig, True),
-            RelayPigPio(27, self.pig, True),
             RelayPigPio(17, self.pig, True),
+            RelayPigPio(27, self.pig, True),
         ]
 
     @property
@@ -105,11 +105,11 @@ class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the switch."""
-        await self.coordinator.relay_board.relay[self.relay_index].on()
+        await self.coordinator.relay_board.relay[self.relay_index].relay_on()
 
     async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
         """Turn off the switch."""
-        await self.coordinator.relay_board.relay[self.relay_index].on()
+        await self.coordinator.relay_board.relay[self.relay_index].relay_off()
 
     @property
     def name(self):

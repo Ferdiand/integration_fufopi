@@ -14,8 +14,10 @@ from unicodedata import decimal
 import serial
 import time
 import random
+import pigpio
 from pigpio import pi
 from pigpio_dht import DHT22
+from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
@@ -107,7 +109,7 @@ class VEDirectCoordinator(DataUpdateCoordinator):
 
         self.relay_board = RelayBoardPigPio(pi=self.pi)
 
-        self.clima = DHT22(18, pi=self.pi)
+        self.clima = DHT22(4, pi=self.pi)
 
         self.batt = BatteryCoordinator()
         self.solar_panel = SolarPanelCoordinator()
@@ -184,10 +186,10 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         _data_cpy = {}
         _data_cpy = self.data
-        # if self.simulation is False:
-        _buffer = self._serial.read_all().decode("ascii", "ignore").split("\r\n")
-        # else:
-        #    _buffer = self.simulate_buffer()
+        if self.simulation is False:
+            _buffer = self._serial.read_all().decode("ascii", "ignore").split("\r\n")
+        else:
+            _buffer = self.simulate_buffer()
         self.logger.warning(f"{_buffer}")
         for line in _buffer:
             _field = line.split("\t")
