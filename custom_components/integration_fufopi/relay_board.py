@@ -31,13 +31,10 @@ class RelayPigPio:
 
     def __init__(self, pin_no, pi, inverted=False) -> None:
         pi.set_mode(pin_no, OUTPUT)
-        if inverted is True:
-            pi.write(pin_no, 1)
-        else:
-            pi.write(pin_no, 0)
         self._pin_no = pin_no
         self._pi = pi
         self._inverted = inverted
+        self.relay_off()
 
     @property
     def is_on(self):
@@ -53,14 +50,14 @@ class RelayPigPio:
             else:
                 return False
 
-    async def relay_on(self):
+    def relay_on(self):
         """Switch relay on"""
         if self._inverted is True:
             self._pi.write(self._pin_no, 0)
         else:
             self._pi.write(self._pin_no, 1)
 
-    async def relay_off(self):
+    def relay_off(self):
         """Switch relay off"""
         if self._inverted is True:
             self._pi.write(self._pin_no, 1)
@@ -103,13 +100,13 @@ class RelayBoardEntity(CoordinatorEntity):
 class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     """integration_blueprint switch class."""
 
-    async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
+    def turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the switch."""
-        await self.coordinator.relay_board.relay[self.relay_index].relay_on()
+        self.coordinator.relay_board.relay[self.relay_index].relay_on()
 
-    async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
+    def turn_off(self, **kwargs):  # pylint: disable=unused-argument
         """Turn off the switch."""
-        await self.coordinator.relay_board.relay[self.relay_index].relay_off()
+        self.coordinator.relay_board.relay[self.relay_index].relay_off()
 
     @property
     def name(self):
