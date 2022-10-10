@@ -1,5 +1,5 @@
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.switch import SwitchEntity, is_on
 from homeassistant.config_entries import ConfigEntry
 
 from .const import DOMAIN, ATTRIBUTION
@@ -112,3 +112,7 @@ class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     def name(self):
         """Return the name of the switch."""
         return f"Relay_{self.relay_index}"
+
+    @property
+    def is_on(self) -> bool | None:
+        return is_on(self.coordinator.hass, self.entity_id)
