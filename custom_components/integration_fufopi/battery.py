@@ -5,6 +5,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from homeassistant.const import (
     ELECTRIC_POTENTIAL_VOLT,
+    ELECTRIC_POTENTIAL_MILLIVOLT,
     DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_CURRENT,
     ELECTRIC_CURRENT_AMPERE,
@@ -39,7 +40,7 @@ class BatteryCoordinator:
     def voltage(self, new_value):
         if isinstance(new_value, str):
             ## value in mv
-            self._voltage = Decimal(new_value) * Decimal(0.001)
+            self._voltage = Decimal(new_value)
         elif isinstance(new_value, Decimal):
             self._voltage = new_value
         else:
@@ -145,7 +146,8 @@ class BatteryVoltageSensor(BatteryEntity, SensorEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
-        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
+        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_MILLIVOLT
+        self._attr_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
 
     @property
     def unique_id(self):

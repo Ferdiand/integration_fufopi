@@ -188,6 +188,8 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         _data_cpy = self.data
         if self.simulation is False:
             _buffer = self._serial.read_all().decode("ascii", "ignore").split("\r\n")
+            # remove last item, may be corrupt
+            _buffer = _buffer.pop(-1)
         else:
             _buffer = self.simulate_buffer()
         self.logger.warning(f"{_buffer}")
