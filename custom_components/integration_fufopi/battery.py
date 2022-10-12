@@ -41,7 +41,7 @@ class BatteryCoordinator:
     def voltage(self, new_value):
         if isinstance(new_value, str):
             ## value in mv
-            self._voltage = Decimal(new_value)
+            self._voltage = Decimal(new_value) * Decimal(0.001)
         elif isinstance(new_value, Decimal):
             self._voltage = new_value
         else:
@@ -56,7 +56,7 @@ class BatteryCoordinator:
     def current(self, new_value):
         if isinstance(new_value, str):
             ## value in mA
-            self._current = Decimal(new_value)
+            self._current = Decimal(new_value) * Decimal(0.001)
         elif isinstance(new_value, Decimal):
             self._current = new_value
         else:
@@ -65,9 +65,7 @@ class BatteryCoordinator:
     @property
     def power(self):
         """return battery power in W"""
-        return (self._voltage * self._current * Decimal(0.001)).quantize(
-            Decimal("1.000")
-        )
+        return (self._voltage * self._current).quantize(Decimal("1.000"))
 
     @property
     def is_charging(self):
@@ -78,13 +76,13 @@ class BatteryCoordinator:
     def per_cent(self):
         """return the amount of battery in per cent"""
         _data = [
-            (Decimal(9000), Decimal(0.0)),
-            (Decimal(10000), Decimal(20.0)),
-            (Decimal(11000), Decimal(40.0)),
-            (Decimal(12000), Decimal(60.0)),
-            (Decimal(13000), Decimal(80.0)),
-            (Decimal(14000), Decimal(100.0)),
-            (Decimal(15000), Decimal(120.0)),
+            (Decimal(9.0), Decimal(0.0)),
+            (Decimal(10.0), Decimal(20.0)),
+            (Decimal(11.0), Decimal(40.0)),
+            (Decimal(12.0), Decimal(60.0)),
+            (Decimal(13.0), Decimal(80.0)),
+            (Decimal(14.0), Decimal(100.0)),
+            (Decimal(15.0), Decimal(120.0)),
         ]
         _min_voltage, _min_per_cent = _data[0]
         if self._voltage >= _min_voltage:
@@ -149,8 +147,7 @@ class BatteryVoltageSensor(BatteryEntity, SensorEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
-        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_MILLIVOLT
-        self._attr_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
+        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
 
     @property
     def unique_id(self):
@@ -172,7 +169,6 @@ class BatteryCurrentSensor(BatteryEntity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_device_class = DEVICE_CLASS_CURRENT
         self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
-        self._attr_unit_of_measurement = ELECTRIC_CURRENT_MILLIAMPERE
 
     @property
     def name(self):
