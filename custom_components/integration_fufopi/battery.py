@@ -5,11 +5,9 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from homeassistant.const import (
     ELECTRIC_POTENTIAL_VOLT,
-    ELECTRIC_POTENTIAL_MILLIVOLT,
     DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_CURRENT,
     ELECTRIC_CURRENT_AMPERE,
-    ELECTRIC_CURRENT_MILLIAMPERE,
     DEVICE_CLASS_POWER,
     POWER_WATT,
     DEVICE_CLASS_BATTERY,
