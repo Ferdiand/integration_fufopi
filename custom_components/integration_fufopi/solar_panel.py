@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.core import callback
 
 from homeassistant.const import (
     ELECTRIC_POTENTIAL_VOLT,
@@ -16,142 +17,16 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity, STATE_CLASS_TOTAL_INCREASING
 
 from .const import DOMAIN, ATTRIBUTION
-
-
-class SolarPanelCoordinator:
-    """Coordinator class for battery"""
-
-    def __init__(self) -> None:
-        self._voltage = Decimal(0)
-        self._power = Decimal(0)
-        self._yield_today = Decimal(0)
-        self._yield_yesterday = Decimal(0)
-        self._max_power_today = Decimal(0)
-        self._max_power_yesterday = Decimal(0)
-        self._yield_total = Decimal(0)
-
-    @property
-    def voltage(self):
-        """return battery voltage in V"""
-        return self._voltage.quantize(Decimal("1.000"))
-
-    @voltage.setter
-    def voltage(self, new_value):
-        if isinstance(new_value, str):
-            ## value in mv
-            self._voltage = Decimal(new_value) * Decimal(0.001)
-        elif isinstance(new_value, Decimal):
-            self._voltage = new_value
-        else:
-            raise ValueError
-
-    @property
-    def current(self):
-        """return solar panel current in A"""
-        if self._voltage > Decimal(0):
-            return (self._power / self._voltage).quantize(Decimal("1.000"))
-
-        return Decimal(0)
-
-    @property
-    def power(self):
-        """return battery power in W"""
-        return self._power.quantize(Decimal("1.000"))
-
-    @power.setter
-    def power(self, new_value):
-        if isinstance(new_value, str):
-            ## value in W
-            self._power = Decimal(new_value)
-        elif isinstance(new_value, Decimal):
-            self._power = new_value
-        else:
-            raise ValueError
-
-    @property
-    def yield_today(self):
-        """return the yield today in kWh"""
-        return self._yield_today.quantize(Decimal("1.000"))
-
-    @yield_today.setter
-    def yield_today(self, new_value):
-        if isinstance(new_value, str):
-            ## value in 0.01 kWh
-            self._yield_today = Decimal(new_value) * Decimal(0.01)
-        elif isinstance(new_value, Decimal):
-            self._yield_today = new_value
-        else:
-            raise ValueError
-
-    @property
-    def yield_yesterday(self):
-        """return the yield yesterday in kWh"""
-        return self._yield_yesterday.quantize(Decimal("1.000"))
-
-    @yield_yesterday.setter
-    def yield_yesterday(self, new_value):
-        if isinstance(new_value, str):
-            ## value in 0.01 kWh
-            self._yield_yesterday = Decimal(new_value) * Decimal(0.01)
-        elif isinstance(new_value, Decimal):
-            self._yield_yesterday = new_value
-        else:
-            raise ValueError
-
-    @property
-    def yield_total(self):
-        """return the yield total in kWh"""
-        return self._yield_total.quantize(Decimal("1.000"))
-
-    @yield_total.setter
-    def yield_total(self, new_value):
-        if isinstance(new_value, str):
-            ## value in 0.01 kWh
-            self._yield_total = Decimal(new_value) * Decimal(0.01)
-        elif isinstance(new_value, Decimal):
-            self._yield_total = new_value
-        else:
-            raise ValueError
-
-    @property
-    def max_power_today(self):
-        """return max power today in W"""
-        return self._max_power_today.quantize(Decimal("1.000"))
-
-    @max_power_today.setter
-    def max_power_today(self, new_value):
-        if isinstance(new_value, str):
-            ## value in W
-            self._max_power_today = Decimal(new_value)
-        elif isinstance(new_value, Decimal):
-            self._max_power_today = new_value
-        else:
-            raise ValueError
-
-    @property
-    def max_power_yesterday(self):
-        """return max power yesterday in W"""
-        return self._max_power_yesterday.quantize(Decimal("1.000"))
-
-    @max_power_yesterday.setter
-    def max_power_yesterday(self, new_value):
-        if isinstance(new_value, str):
-            ## value in W
-            self._max_power_yesterday = Decimal(new_value)
-        elif isinstance(new_value, Decimal):
-            self._max_power_yesterday = new_value
-        else:
-            raise ValueError
+from .SmartSolar import SmartSolarCoordinator
 
 
 class SolarPanelEntity(CoordinatorEntity):
     """Solar panel base entity"""
 
-    def __init__(self, coordinator, config_entry):
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self.config_entry = config_entry
-        self._solar_panel = SolarPanelCoordinator
-        self._solar_panel = self.coordinator.solar_panel
 
     @property
     def unique_id(self):
@@ -182,6 +57,7 @@ class SolarPanelVoltageSensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel voltage"
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
         self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
 
@@ -189,13 +65,13 @@ class SolarPanelVoltageSensor(SolarPanelEntity, SensorEntity):
     def unique_id(self):
         return super().unique_id + "V"
 
-    @property
-    def name(self):
-        return "Solar panel voltage"
-
-    @property
-    def native_value(self):
-        return self._solar_panel.voltage
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.panel_voltage) * Decimal(
+            0.001
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
 
 
 class SolarPanelCurrentSensor(SolarPanelEntity, SensorEntity):
@@ -203,20 +79,25 @@ class SolarPanelCurrentSensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel current"
         self._attr_device_class = DEVICE_CLASS_CURRENT
         self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
-
-    @property
-    def name(self):
-        return "Solar panel current"
 
     @property
     def unique_id(self):
         return super().unique_id + "I"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.current
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _v = Decimal(self.coordinator.panel_voltage)
+        _p = Decimal(self.coordinator.panel_power)
+        if _v > Decimal(0):
+            self._attr_native_value = (_p / _v).quantize(Decimal("1.000"))
+        else:
+            self._attr_native_value = Decimal(0)
+
+        self.async_write_ha_state()
 
 
 class SolarPanelPowerSensor(SolarPanelEntity, SensorEntity):
@@ -224,21 +105,19 @@ class SolarPanelPowerSensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel power"
         self._attr_device_class = DEVICE_CLASS_POWER
         self._attr_native_unit_of_measurement = POWER_WATT
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel power"
 
     @property
     def unique_id(self):
         return super().unique_id + "P"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.power
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.panel_power)
+        self.async_write_ha_state()
 
 
 class SolarPanelMaxPowerTodaySensor(SolarPanelEntity, SensorEntity):
@@ -246,21 +125,19 @@ class SolarPanelMaxPowerTodaySensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel max power today"
         self._attr_device_class = DEVICE_CLASS_POWER
         self._attr_native_unit_of_measurement = POWER_WATT
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel max power today"
 
     @property
     def unique_id(self):
         return super().unique_id + "MPT"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.max_power_today
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.max_power_today)
+        self.async_write_ha_state()
 
 
 class SolarPanelMaxPowerYesterdaySensor(SolarPanelEntity, SensorEntity):
@@ -268,21 +145,19 @@ class SolarPanelMaxPowerYesterdaySensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel max power yesterday"
         self._attr_device_class = DEVICE_CLASS_POWER
         self._attr_native_unit_of_measurement = POWER_WATT
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel max power yesterday"
 
     @property
     def unique_id(self):
         return super().unique_id + "MPY"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.max_power_yesterday
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.max_power_yesterday)
+        self.async_write_ha_state()
 
 
 class SolarPanelProductionTodaySensor(SolarPanelEntity, SensorEntity):
@@ -290,22 +165,22 @@ class SolarPanelProductionTodaySensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel production today"
         self._attr_state_class = STATE_CLASS_TOTAL_INCREASING
         self._attr_device_class = DEVICE_CLASS_ENERGY
         self._attr_native_unit_of_measurement = ENERGY_KILO_WATT_HOUR
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel production today"
-
-    @property
     def unique_id(self):
         return super().unique_id + "YT"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.yield_today
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.yield_today) * Decimal(
+            0.01
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
 
 
 class SolarPanelProductionYesterdaySensor(SolarPanelEntity, SensorEntity):
@@ -313,21 +188,21 @@ class SolarPanelProductionYesterdaySensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel production yesterday"
         self._attr_device_class = DEVICE_CLASS_ENERGY
         self._attr_native_unit_of_measurement = ENERGY_KILO_WATT_HOUR
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel production yesterday"
 
     @property
     def unique_id(self):
         return super().unique_id + "YY"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.yield_yesterday
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.yield_yesterday) * Decimal(
+            0.01
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
 
 
 class SolarPanelProductionTotalSensor(SolarPanelEntity, SensorEntity):
@@ -335,18 +210,18 @@ class SolarPanelProductionTotalSensor(SolarPanelEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Solar panel production total"
         self._attr_device_class = DEVICE_CLASS_ENERGY
         self._attr_native_unit_of_measurement = ENERGY_KILO_WATT_HOUR
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Solar panel production total"
 
     @property
     def unique_id(self):
         return super().unique_id + "YTT"
 
-    @property
-    def native_value(self):
-        return self._solar_panel.yield_total
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.yield_total) * Decimal(
+            0.01
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()

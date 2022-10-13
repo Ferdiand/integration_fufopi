@@ -23,9 +23,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from .battery import BatteryCoordinator
-from .solar_panel import SolarPanelCoordinator
 from .relay_board import RelayBoardPigPio
+from .SmartSolar import SmartSolarCoordinator
 from homeassistant.components.sensor import (
     DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
@@ -59,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
 
-    coordinator = VEDirectCoordinator(
+    coordinator = SmartSolarCoordinator(
         hass=hass,
         logger=_LOGGER,
         name="Victron Solar",
@@ -110,9 +109,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
         self.relay_board = RelayBoardPigPio(pi=self.pi)
 
         self.clima = DHT22(4, pi=self.pi)
-
-        self.batt = BatteryCoordinator()
-        self.solar_panel = SolarPanelCoordinator()
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
@@ -198,31 +194,6 @@ class VEDirectCoordinator(DataUpdateCoordinator):
             if len(_field) > 1:
                 _key = _field[0]
                 _value = _field[1]
-                if _key == "V":
-                    self.batt.voltage = _value
-                elif _key == "I":
-                    self.batt.current = _value
-                elif _key == "PPV":
-                    self.solar_panel.power = _value
-                elif _key == "VPV":
-                    self.solar_panel.voltage = _value
-                elif _key == "H19":
-                    self.solar_panel.yield_total = _value
-                elif _key == "H20":
-                    self.solar_panel.yield_today = _value
-                elif _key == "H21":
-                    self.solar_panel.max_power_today = _value
-                elif _key == "H22":
-                    self.solar_panel.yield_yesterday = _value
-                elif _key == "H23":
-                    self.solar_panel.max_power_yesterday = _value
-                elif _key in list(_data_cpy.keys()):
-                    if isinstance(_data_cpy[_key]["value"], Decimal):
-                        _data_cpy[_key]["value"] = Decimal(_value)
-                    else:
-                        _data_cpy[_key]["value"] = _value
-                else:
-                    self.logger.warning(f"Key not defined {_field}")
             else:
                 self.logger.warning(f"Field structure not valid: {_field}")
 

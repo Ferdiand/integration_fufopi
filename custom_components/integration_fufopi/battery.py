@@ -2,6 +2,7 @@ from ast import Str
 from decimal import Decimal
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.core import callback
 
 from homeassistant.const import (
     ELECTRIC_POTENTIAL_VOLT,
@@ -21,99 +22,16 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DOMAIN, ATTRIBUTION
-
-
-class BatteryCoordinator:
-    """Coordinator class for battery"""
-
-    def __init__(self) -> None:
-        self._voltage = Decimal(0)
-        self._current = Decimal(0)
-
-    @property
-    def voltage(self):
-        """return battery voltage in V"""
-        return self._voltage.quantize(Decimal("1.000"))
-
-    @voltage.setter
-    def voltage(self, new_value):
-        if isinstance(new_value, str):
-            ## value in mv
-            self._voltage = Decimal(new_value) * Decimal(0.001)
-        elif isinstance(new_value, Decimal):
-            self._voltage = new_value
-        else:
-            raise ValueError
-
-    @property
-    def current(self):
-        """return battery current in A"""
-        return self._current.quantize(Decimal("1.000"))
-
-    @current.setter
-    def current(self, new_value):
-        if isinstance(new_value, str):
-            ## value in mA
-            self._current = Decimal(new_value) * Decimal(0.001)
-        elif isinstance(new_value, Decimal):
-            self._current = new_value
-        else:
-            raise ValueError
-
-    @property
-    def power(self):
-        """return battery power in W"""
-        return (self._voltage * self._current).quantize(Decimal("1.000"))
-
-    @property
-    def is_charging(self):
-        """return True if battery is charging"""
-        return self._current > Decimal(0)
-
-    @property
-    def per_cent(self):
-        """return the amount of battery in per cent"""
-        _data = [
-            (Decimal(9.0), Decimal(0.0)),
-            (Decimal(10.0), Decimal(20.0)),
-            (Decimal(11.0), Decimal(40.0)),
-            (Decimal(12.0), Decimal(60.0)),
-            (Decimal(13.0), Decimal(80.0)),
-            (Decimal(14.0), Decimal(100.0)),
-            (Decimal(15.0), Decimal(120.0)),
-        ]
-        _min_voltage, _min_per_cent = _data[0]
-        if self._voltage >= _min_voltage:
-            for _v, _per_cent in _data:
-                if self._voltage == _v:
-                    return _per_cent.quantize(Decimal("1.0"))
-
-                if self._voltage < _v:
-                    return self._scale(
-                        self._voltage, (_v, _per_cent), (_min_voltage, _min_per_cent)
-                    ).quantize(Decimal("1.0"))
-                else:
-                    _min_voltage = _v
-                    _min_per_cent = _per_cent
-
-        return Decimal(0)
-
-    def _scale(self, x, upper, lower):
-        _x1, _y1 = lower
-        _x2, _y2 = upper
-        _m = (_y2 - _y1) / (_x2 - _x1)
-        _n = _m * _x1 - _y1
-        return x * _m - _n
+from .SmartSolar import SmartSolarCoordinator
 
 
 class BatteryEntity(CoordinatorEntity):
     """VE Direct base entity"""
 
-    def __init__(self, coordinator, config_entry):
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self.config_entry = config_entry
-        self._batt = BatteryCoordinator
-        self._batt = self.coordinator.batt
 
     @property
     def unique_id(self):
@@ -144,6 +62,7 @@ class BatteryVoltageSensor(BatteryEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery voltage"
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
         self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_VOLT
 
@@ -151,13 +70,13 @@ class BatteryVoltageSensor(BatteryEntity, SensorEntity):
     def unique_id(self):
         return super().unique_id + "V"
 
-    @property
-    def name(self):
-        return "Battery voltage"
-
-    @property
-    def native_value(self):
-        return self._batt.voltage
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.battery_voltage) * Decimal(
+            0.001
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
 
 
 class BatteryCurrentSensor(BatteryEntity, SensorEntity):
@@ -165,20 +84,21 @@ class BatteryCurrentSensor(BatteryEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery current"
         self._attr_device_class = DEVICE_CLASS_CURRENT
         self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
-
-    @property
-    def name(self):
-        return "Battery current"
 
     @property
     def unique_id(self):
         return super().unique_id + "I"
 
-    @property
-    def native_value(self):
-        return self._batt.current
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = Decimal(self.coordinator.battery_current) * Decimal(
+            0.001
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
 
 
 class PowerToBattSensor(BatteryEntity, SensorEntity):
@@ -186,24 +106,28 @@ class PowerToBattSensor(BatteryEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery in power"
         self._attr_device_class = DEVICE_CLASS_POWER
         self._attr_native_unit_of_measurement = POWER_WATT
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Battery in power"
 
     @property
     def unique_id(self):
         return super().unique_id + "PTB"
 
-    @property
-    def native_value(self):
-        if self._batt.is_charging:
-            return self._batt.power
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _v = Decimal(self.coordinator.battery_voltage)
+        _i = Decimal(self.coordinator.battery_current)
 
-        return Decimal(0)
+        if _i > Decimal(0):
+            self._attr_native_value = (
+                _v * _i * Decimal(0.001).quantize(Decimal("1.000"))
+            )
+        else:
+            self._attr_native_value = Decimal(0)
+
+        self.async_write_ha_state()
 
 
 class PowerFromBattSensor(BatteryEntity, SensorEntity):
@@ -211,24 +135,28 @@ class PowerFromBattSensor(BatteryEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery out power"
         self._attr_device_class = DEVICE_CLASS_POWER
         self._attr_native_unit_of_measurement = POWER_WATT
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Battery out power"
 
     @property
     def unique_id(self):
         return super().unique_id + "PFB"
 
-    @property
-    def native_value(self):
-        if not self._batt.is_charging:
-            return self._batt.power * Decimal(-1)
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _v = Decimal(self.coordinator.battery_voltage)
+        _i = Decimal(self.coordinator.battery_current)
 
-        return Decimal(0)
+        if _i < Decimal(0):
+            self._attr_native_value = (
+                _v * _i * Decimal(0.001) * Decimal(-1).quantize(Decimal("1.000"))
+            )
+        else:
+            self._attr_native_value = Decimal(0)
+
+        self.async_write_ha_state()
 
 
 class BatteryStateBinarySensor(BatteryEntity, BinarySensorEntity):
@@ -236,21 +164,24 @@ class BatteryStateBinarySensor(BatteryEntity, BinarySensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery is charging"
         self._attr_device_class = DEVICE_CLASS_BATTERY_CHARGING
 
     @property
     def unique_id(self):
         return super().unique_id + "BS"
 
-    @property
-    def name(self):
-        """Return the name of the binary_sensor."""
-        return "Battery is charging"
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _i = Decimal(self.coordinator.battery_current)
 
-    @property
-    def is_on(self):
-        """Return true if the binary_sensor is on."""
-        return self._batt.is_charging
+        if _i > Decimal(0):
+            self._attr_is_on = True
+        else:
+            self._attr_is_on = False
+
+        self.async_write_ha_state()
 
 
 class BatteryPerCentSensor(BatteryEntity, SensorEntity):
@@ -258,6 +189,7 @@ class BatteryPerCentSensor(BatteryEntity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery left"
         self._attr_device_class = DEVICE_CLASS_BATTERY
         self._attr_native_unit_of_measurement = "%"
 
@@ -265,11 +197,42 @@ class BatteryPerCentSensor(BatteryEntity, SensorEntity):
     def unique_id(self):
         return super().unique_id + "BPC"
 
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Battery left"
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _data = [
+            (Decimal(9.0), Decimal(0.0)),
+            (Decimal(10.0), Decimal(20.0)),
+            (Decimal(11.0), Decimal(40.0)),
+            (Decimal(12.0), Decimal(60.0)),
+            (Decimal(13.0), Decimal(80.0)),
+            (Decimal(14.0), Decimal(100.0)),
+            (Decimal(15.0), Decimal(120.0)),
+        ]
 
-    @property
-    def native_value(self):
-        return self._batt.per_cent
+        _min_voltage, _min_per_cent = _data[0]
+        _voltage = Decimal(self.coordinator.battery_voltage)
+
+        self._attr_native_value = Decimal(0)
+
+        if _voltage >= _min_voltage:
+            for _v, _per_cent in _data:
+                if _voltage == _v:
+                    self._attr_native_value = _per_cent.quantize(Decimal("1.0"))
+
+                elif _voltage < _v:
+                    self._attr_native_value = self._scale(
+                        _voltage, (_v, _per_cent), (_min_voltage, _min_per_cent)
+                    ).quantize(Decimal("1.0"))
+                else:
+                    _min_voltage = _v
+                    _min_per_cent = _per_cent
+
+        self.async_write_ha_state()
+
+    def _scale(self, x, upper, lower):
+        _x1, _y1 = lower
+        _x2, _y2 = upper
+        _m = (_y2 - _y1) / (_x2 - _x1)
+        _n = _m * _x1 - _y1
+        return x * _m - _n

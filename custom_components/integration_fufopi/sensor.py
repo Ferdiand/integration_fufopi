@@ -35,8 +35,8 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     _sensors = []
-    for key in list(coordinator.data.keys()):
-        _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
+    # for key in list(coordinator.data.keys()):
+    #    _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
 
     _sensors.append(BatteryCurrentSensor(coordinator, entry))
     _sensors.append(BatteryVoltageSensor(coordinator, entry))
@@ -53,10 +53,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(SolarPanelMaxPowerYesterdaySensor(coordinator, entry))
     _sensors.append(SolarPanelProductionTotalSensor(coordinator, entry))
 
-    _sensors.append(LoadPowerSensor(coordinator, entry))
+    # _sensors.append(LoadPowerSensor(coordinator, entry))
 
-    _sensors.append(ClimaTemperatureSensor(coordinator, entry))
-    _sensors.append(ClimaHumiditySensor(coordinator, entry))
+    # _sensors.append(ClimaTemperatureSensor(coordinator, entry))
+    # _sensors.append(ClimaHumiditySensor(coordinator, entry))
 
     async_add_devices(_sensors)
 
