@@ -105,15 +105,17 @@ class RelayBoardEntity(CoordinatorEntity):
 class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     """integration_blueprint switch class."""
 
-    def turn_on(self, **kwargs):  # pylint: disable=unused-argument
+    async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the switch."""
         self.coordinator.relay_board.relay[self.relay_index].relay_on()
         self._attr_is_on = True
+        self.async_write_ha_state()
 
-    def turn_off(self, **kwargs):  # pylint: disable=unused-argument
+    async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
         """Turn off the switch."""
         self.coordinator.relay_board.relay[self.relay_index].relay_off()
         self._attr_is_on = False
+        self.async_write_ha_state()
 
     @property
     def name(self):
