@@ -151,7 +151,7 @@ class PowerFromBattSensor(BatteryEntity, SensorEntity):
 
         if _i < Decimal(0):
             self._attr_native_value = (
-                _v * _i * Decimal(0.001) * Decimal(-1).quantize(Decimal("1.000"))
+                _v * _i * Decimal(0.001) * Decimal(-1.0).quantize(Decimal("1.000"))
             )
         else:
             self._attr_native_value = Decimal(0)
@@ -211,7 +211,7 @@ class BatteryPerCentSensor(BatteryEntity, SensorEntity):
         ]
 
         _min_voltage, _min_per_cent = _data[0]
-        _voltage = Decimal(self.coordinator.battery_voltage)
+        _voltage = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
 
         self._attr_native_value = Decimal(0)
 
