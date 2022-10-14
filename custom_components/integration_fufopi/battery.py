@@ -112,7 +112,7 @@ class PowerToBattSensor(BatteryEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return super().unique_id + "PTB"
+        return super().unique_id + "PIB"
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -141,7 +141,7 @@ class PowerFromBattSensor(BatteryEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return super().unique_id + "PFB"
+        return super().unique_id + "POB"
 
     @callback
     def _handle_coordinator_update(self) -> None:

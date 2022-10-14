@@ -3,11 +3,26 @@ import logging
 import random
 import serial
 
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
+
+from homeassistant.helpers.update_coordinator import (
+    DataUpdateCoordinator,
+    CoordinatorEntity,
+)
 from homeassistant.core import Config, HomeAssistant
+from homeassistant.components.sensor import (
+    SensorEntity,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_HUMIDITY,
+    TEMP_CELSIUS,
+)
+
 from datetime import timedelta
 from pigpio import pi
 from .relay_board import RelayBoardPigPio
+from .const import DOMAIN, ATTRIBUTION
+
 
 PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
 
@@ -256,3 +271,174 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
                 self.logger.warning(f"Field structure not valid: {_field}")
 
         return self._data
+
+
+class SmartSolarEntity(CoordinatorEntity):
+    """VE Direct base entity"""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator)
+        self.coordinator = coordinator
+        self.config_entry = config_entry
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self.config_entry.entry_id + "SmartSolar"
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, "HQ2129WD7QV")},
+            "name": "SmartSolar MPPT 100|20 48V",
+            "model": "HQ2129WD7QV",
+            "manufacturer": "Victron Energy",
+        }
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return {
+            "attribution": ATTRIBUTION,
+            "id": self.unique_id,
+            "integration": DOMAIN,
+        }
+
+
+class SmartSolarProductIDSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar Product ID Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Product ID"
+        self._attr_icon = "mdi:identifier"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "PID"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.product_id
+
+        self.async_write_ha_state()
+
+
+class SmartSolarFirmwareSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar Firmware Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Firmware Version"
+        self._attr_icon = "mdi:identifier"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "FW"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.firmware
+
+        self.async_write_ha_state()
+
+
+class SmartSolarSerialNumberSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar serial number Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Serial Number"
+        self._attr_icon = "mdi:music-accidental-sharp"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "SER#"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.serial_number
+
+        self.async_write_ha_state()
+
+
+class SmartSolarCSSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar operation state Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "State of operation"
+        self._attr_icon = "mdi:car-turbocharger"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "CS"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.state_of_operation
+
+        self.async_write_ha_state()
+
+
+class SmartSolarMPPTSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar tracker op mode Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Tracker operation mode"
+        self._attr_icon = "mdi:radar"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "MPPT"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.tracker_operation_mode
+
+        self.async_write_ha_state()
+
+
+class SmartSolarORSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar off reason Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Off Reason"
+        self._attr_icon = "mdi:playlist-remove"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "OR"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.off_reason
+
+        self.async_write_ha_state()
+
+
+class SmartSolarHSDSSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar day seq number Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Day seq number"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "HSDS"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.day_seq_number
+
+        self.async_write_ha_state()

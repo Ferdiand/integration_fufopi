@@ -12,6 +12,17 @@ from homeassistant.components.sensor import (
 
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
 from .entity import VEDirectEntity, ClimaDHTEntity
+
+from .SmartSolar import (
+    SmartSolarCSSensor,
+    SmartSolarFirmwareSensor,
+    SmartSolarHSDSSensor,
+    SmartSolarORSensor,
+    SmartSolarMPPTSensor,
+    SmartSolarProductIDSensor,
+    SmartSolarSerialNumberSensor,
+)
+
 from .battery import (
     BatteryVoltageSensor,
     BatteryCurrentSensor,
@@ -35,8 +46,14 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     _sensors = []
-    # for key in list(coordinator.data.keys()):
-    #    _sensors.append(IntegrationBlueprintSensor(coordinator, entry, key))
+
+    _sensors.append(SmartSolarCSSensor(coordinator, entry))
+    _sensors.append(SmartSolarFirmwareSensor(coordinator, entry))
+    _sensors.append(SmartSolarHSDSSensor(coordinator, entry))
+    _sensors.append(SmartSolarORSensor(coordinator, entry))
+    _sensors.append(SmartSolarMPPTSensor(coordinator, entry))
+    _sensors.append(SmartSolarProductIDSensor(coordinator, entry))
+    _sensors.append(SmartSolarSerialNumberSensor(coordinator, entry))
 
     _sensors.append(BatteryCurrentSensor(coordinator, entry))
     _sensors.append(BatteryVoltageSensor(coordinator, entry))
