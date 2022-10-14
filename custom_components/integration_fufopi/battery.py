@@ -95,8 +95,8 @@ class BatteryCurrentSensor(BatteryEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.battery_current) * Decimal(
-            0.001
+        self._attr_native_value = (
+            Decimal(self.coordinator.battery_current) * Decimal(0.001)
         ).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
@@ -121,8 +121,8 @@ class PowerToBattSensor(BatteryEntity, SensorEntity):
         _i = Decimal(self.coordinator.battery_current)
 
         if _i > Decimal(0):
-            self._attr_native_value = (
-                _v * _i * Decimal(0.001).quantize(Decimal("1.000"))
+            self._attr_native_value = (_v * _i * Decimal(0.001)).quantize(
+                Decimal("1.000")
             )
         else:
             self._attr_native_value = Decimal(0)
@@ -146,12 +146,12 @@ class PowerFromBattSensor(BatteryEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.battery_voltage)
-        _i = Decimal(self.coordinator.battery_current)
+        _v = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.battery_current) * Decimal(0.001)
 
         if _i < Decimal(0):
-            self._attr_native_value = (
-                _v * _i * Decimal(0.001) * Decimal(-1.0).quantize(Decimal("1.000"))
+            self._attr_native_value = (_v * _i * Decimal(-1.0)).quantize(
+                Decimal("1.000")
             )
         else:
             self._attr_native_value = Decimal(0)
