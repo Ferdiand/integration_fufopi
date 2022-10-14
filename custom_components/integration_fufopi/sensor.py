@@ -21,6 +21,17 @@ from .SmartSolar import (
     SmartSolarMPPTSensor,
     SmartSolarProductIDSensor,
     SmartSolarSerialNumberSensor,
+    SmartSolarCheckSumSensor,
+    SmartSolarH19Sensor,
+    SmartSolarH20Sensor,
+    SmartSolarH21Sensor,
+    SmartSolarH22Sensor,
+    SmartSolarH23Sensor,
+    SmartSolarISensor,
+    SmartSolarILSensor,
+    SmartSolarPPVSensor,
+    SmartSolarVPVSensor,
+    SmartSolarVSensor,
 )
 
 from .battery import (
@@ -54,6 +65,17 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(SmartSolarMPPTSensor(coordinator, entry))
     _sensors.append(SmartSolarProductIDSensor(coordinator, entry))
     _sensors.append(SmartSolarSerialNumberSensor(coordinator, entry))
+    _sensors.append(SmartSolarCheckSumSensor(coordinator, entry))
+    _sensors.append(SmartSolarH19Sensor(coordinator, entry))
+    _sensors.append(SmartSolarH20Sensor(coordinator, entry))
+    _sensors.append(SmartSolarH21Sensor(coordinator, entry))
+    _sensors.append(SmartSolarH22Sensor(coordinator, entry))
+    _sensors.append(SmartSolarH23Sensor(coordinator, entry))
+    _sensors.append(SmartSolarISensor(coordinator, entry))
+    _sensors.append(SmartSolarILSensor(coordinator, entry))
+    _sensors.append(SmartSolarPPVSensor(coordinator, entry))
+    _sensors.append(SmartSolarVPVSensor(coordinator, entry))
+    _sensors.append(SmartSolarVSensor(coordinator, entry))
 
     _sensors.append(BatteryCurrentSensor(coordinator, entry))
     _sensors.append(BatteryVoltageSensor(coordinator, entry))

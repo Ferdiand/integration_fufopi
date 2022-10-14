@@ -10,12 +10,19 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
 from homeassistant.core import Config, HomeAssistant
-from homeassistant.components.sensor import (
-    SensorEntity,
+from homeassistant.components.sensor import SensorEntity
+
+from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_HUMIDITY,
     TEMP_CELSIUS,
+    DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_VOLTAGE,
+    DEVICE_CLASS_ENERGY,
+    ELECTRIC_CURRENT_MILLIAMPERE,
+    ELECTRIC_POTENTIAL_MILLIVOLT,
+    POWER_WATT,
 )
 
 from datetime import timedelta
@@ -440,5 +447,234 @@ class SmartSolarHSDSSensor(SmartSolarEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = self.coordinator.day_seq_number
+
+        self.async_write_ha_state()
+
+
+class SmartSolarCheckSumSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar checksum Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Checksum"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "Checksum"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.checksum
+
+        self.async_write_ha_state()
+
+
+class SmartSolarILSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar checksum Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "IL"
+        self._attr_device_class = DEVICE_CLASS_CURRENT
+        self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_MILLIAMPERE
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "IL"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.load_current
+
+        self.async_write_ha_state()
+
+
+class SmartSolarISensor(SmartSolarEntity, SensorEntity):
+    """Smart solar checksum Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "I"
+        self._attr_device_class = DEVICE_CLASS_CURRENT
+        self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_MILLIAMPERE
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "I"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.battery_current
+
+        self.async_write_ha_state()
+
+
+class SmartSolarVSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar checksum Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "V"
+        self._attr_device_class = DEVICE_CLASS_VOLTAGE
+        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_MILLIVOLT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "V"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.battery_voltage
+
+        self.async_write_ha_state()
+
+
+class SmartSolarVPVSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar VPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "VPV"
+        self._attr_device_class = DEVICE_CLASS_VOLTAGE
+        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_MILLIVOLT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "VPV"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.panel_voltage
+
+        self.async_write_ha_state()
+
+
+class SmartSolarPPVSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "PPV"
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = POWER_WATT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "PPV"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.panel_power
+
+        self.async_write_ha_state()
+
+
+class SmartSolarH19Sensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "H19"
+        self._attr_device_class = DEVICE_CLASS_ENERGY
+        self._attr_native_unit_of_measurement = "0,01 kWh"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "H19"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.yield_total
+
+        self.async_write_ha_state()
+
+
+class SmartSolarH20Sensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "H20"
+        self._attr_device_class = DEVICE_CLASS_ENERGY
+        self._attr_native_unit_of_measurement = "0,01 kWh"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "H20"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.yield_today
+
+        self.async_write_ha_state()
+
+
+class SmartSolarH21Sensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "H21"
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = POWER_WATT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "H21"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.max_power_today
+
+        self.async_write_ha_state()
+
+
+class SmartSolarH22Sensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "H22"
+        self._attr_device_class = DEVICE_CLASS_ENERGY
+        self._attr_native_unit_of_measurement = "0,01 kWh"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "H22"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.yield_yesterday
+
+        self.async_write_ha_state()
+
+
+class SmartSolarH23Sensor(SmartSolarEntity, SensorEntity):
+    """Smart solar PPV Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "H23"
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = POWER_WATT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "H23"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.max_power_yesterday
 
         self.async_write_ha_state()
