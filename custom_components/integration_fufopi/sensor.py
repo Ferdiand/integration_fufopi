@@ -22,6 +22,7 @@ from .SmartSolar import (
     SmartSolarProductIDSensor,
     SmartSolarSerialNumberSensor,
     SmartSolarCheckSumSensor,
+    SmartSolarErrSensor,
     SmartSolarH19Sensor,
     SmartSolarH20Sensor,
     SmartSolarH21Sensor,
@@ -66,6 +67,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(SmartSolarProductIDSensor(coordinator, entry))
     _sensors.append(SmartSolarSerialNumberSensor(coordinator, entry))
     _sensors.append(SmartSolarCheckSumSensor(coordinator, entry))
+    _sensors.append(SmartSolarErrSensor(coordinator, entry))
     _sensors.append(SmartSolarH19Sensor(coordinator, entry))
     _sensors.append(SmartSolarH20Sensor(coordinator, entry))
     _sensors.append(SmartSolarH21Sensor(coordinator, entry))

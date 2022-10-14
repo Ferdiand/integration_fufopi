@@ -470,6 +470,25 @@ class SmartSolarCheckSumSensor(SmartSolarEntity, SensorEntity):
         self.async_write_ha_state()
 
 
+class SmartSolarErrSensor(SmartSolarEntity, SensorEntity):
+    """Smart solar checksum Sensor class."""
+
+    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Error reason"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "ERR"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = self.coordinator.error_reason
+
+        self.async_write_ha_state()
+
+
 class SmartSolarILSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
