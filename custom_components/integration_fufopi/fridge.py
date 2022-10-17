@@ -86,4 +86,4 @@ class FridgePowerSwitch(FridgeEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
-        return self.coordinator.relay_board[self._relay_index].is_on
+        return self.coordinator.relay_board.relay[self._relay_index].is_on
