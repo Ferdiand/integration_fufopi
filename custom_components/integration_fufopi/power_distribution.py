@@ -125,3 +125,49 @@ class LoadStateBinarySensor(PowerDistributionEntity, BinarySensorEntity):
             self._attr_is_on = False
 
         self.async_write_ha_state()
+
+
+class RpiCurrentSensor(PowerDistributionEntity, SensorEntity):
+    """Rpi current sensor"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Rpi current"
+        self._attr_device_class = DEVICE_CLASS_CURRENT
+        self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "RpiI"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = (
+            Decimal(self.coordinator.load_current) * Decimal(0.001)
+        ).quantize(Decimal("1.000"))
+        self.async_write_ha_state()
+
+
+class RpiPowerSensor(PowerDistributionEntity, SensorEntity):
+    """Calculated power sensor"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Rpi power"
+        self._attr_device_class = DEVICE_CLASS_POWER
+        self._attr_native_unit_of_measurement = POWER_WATT
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "RpiP"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _v = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.load_current) * Decimal(0.001)
+
+        self._attr_native_value = (_v * _i).quantize(Decimal("1.000"))
+
+        self.async_write_ha_state()

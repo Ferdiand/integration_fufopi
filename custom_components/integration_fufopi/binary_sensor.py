@@ -19,4 +19,4 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _binary_sensors = []
     _binary_sensors.append(BatteryStateBinarySensor(coordinator, entry))
     _binary_sensors.append(LoadStateBinarySensor(coordinator, entry))
-    async_add_devices([BatteryStateBinarySensor(coordinator, entry)])
+    async_add_devices(_binary_sensors)
