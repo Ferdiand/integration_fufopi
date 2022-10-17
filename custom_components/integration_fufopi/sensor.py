@@ -149,30 +149,6 @@ class IntegrationBlueprintSensor(VEDirectEntity, SensorEntity):
         return super().icon
 
 
-class LoadPowerSensor(VEDirectEntity, SensorEntity):
-    """Calculated power sensor"""
-
-    def __init__(self, coordinator, config_entry):
-        super().__init__(coordinator, config_entry, "PL")
-        self._attr_device_class = DEVICE_CLASS_POWER
-        self._attr_native_unit_of_measurement = "W"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Load power"
-
-    @property
-    def native_value(self):
-        _v = self.coordinator.batt.voltage
-        _i = (
-            self.coordinator.data["IL"]["value"]
-            * self.coordinator.data["IL"]["unit_conversion"]
-        )
-
-        return (_v * _i).quantize(Decimal("1.000"))
-
-
 class ClimaTemperatureSensor(ClimaDHTEntity, SensorEntity):
     """Tempreature sensor"""
 
