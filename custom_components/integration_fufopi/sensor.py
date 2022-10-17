@@ -53,6 +53,8 @@ from .solar_panel import (
     SolarPanelProductionTotalSensor,
 )
 
+from .power_distribution import LoadPowerSensor, LoadCurrentSensor
+
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
@@ -93,6 +95,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(SolarPanelProductionYesterdaySensor(coordinator, entry))
     _sensors.append(SolarPanelMaxPowerYesterdaySensor(coordinator, entry))
     _sensors.append(SolarPanelProductionTotalSensor(coordinator, entry))
+
+    _sensors.append(LoadPowerSensor(coordinator, entry))
+    _sensors.append(LoadCurrentSensor(coordinator, entry))
 
     # _sensors.append(LoadPowerSensor(coordinator, entry))
 
