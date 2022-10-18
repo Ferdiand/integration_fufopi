@@ -143,9 +143,12 @@ class RpiCurrentSensor(PowerDistributionEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = (
-            Decimal(self.coordinator.load_current) * Decimal(0.001)
-        ).quantize(Decimal("1.000"))
+        if self.coordinator.relay_board.relay[1].is_on:
+            self._attr_native_value = (Decimal(0.5)).quantize(Decimal("1.000"))
+        else:
+            self._attr_native_value = (
+                Decimal(self.coordinator.load_current) * Decimal(0.001)
+            ).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
 

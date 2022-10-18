@@ -42,6 +42,7 @@ from .battery import (
     PowerToBattSensor,
     BatteryPerCentSensor,
 )
+
 from .solar_panel import (
     SolarPanelVoltageSensor,
     SolarPanelCurrentSensor,
@@ -59,6 +60,8 @@ from .power_distribution import (
     RpiCurrentSensor,
     RpiPowerSensor,
 )
+
+from .fridge import FridgeCurrentSensor, FridgePowerSensor
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -105,6 +108,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(LoadCurrentSensor(coordinator, entry))
     _sensors.append(RpiCurrentSensor(coordinator, entry))
     _sensors.append(RpiPowerSensor(coordinator, entry))
+
+    _sensors.append(FridgeCurrentSensor(coordinator, entry))
+    _sensors.append(FridgePowerSensor(coordinator, entry))
 
     # _sensors.append(LoadPowerSensor(coordinator, entry))
 

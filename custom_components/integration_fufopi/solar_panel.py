@@ -90,7 +90,7 @@ class SolarPanelCurrentSensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.panel_voltage)
+        _v = Decimal(self.coordinator.panel_voltage) * Decimal(0.001)
         _p = Decimal(self.coordinator.panel_power)
         if _v > Decimal(0):
             self._attr_native_value = (_p / _v).quantize(Decimal("1.000"))
