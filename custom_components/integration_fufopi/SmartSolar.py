@@ -128,7 +128,11 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
             "H23": "0",
         }
 
-        self.relay_board = RelayBoardPigPio(pi("172.30.33.0"))
+        self.pigpio = pi("172.30.33.0")
+
+        self.i2c_adxl345 = self.pigpio.i2c_open(1, 0x53)
+
+        self.relay_board = RelayBoardPigPio(self.pigpio)
 
         try:
             self._serial = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=1)
