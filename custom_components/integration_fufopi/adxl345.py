@@ -17,7 +17,7 @@ from homeassistant.const import SPEED_METERS_PER_SECOND
 from .const import DOMAIN, ATTRIBUTION
 
 from homeassistant.components.sensor import SensorEntity
-
+from homeassistant.components.switch import SwitchEntity, DEVICE_CLASS_OUTLET
 
 # ADXL345 constants
 EARTH_GRAVITY_MS2 = 9.80665
@@ -200,6 +200,7 @@ class ADXL345AccelXSensor(ADXL345Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Accel X"
         self._attr_native_unit_of_measurement = SPEED_METERS_PER_SECOND + "²"
+        self._attr_icon = "mdi:axis-x-arrow"
 
     @property
     def unique_id(self):
@@ -220,6 +221,7 @@ class ADXL345AccelYSensor(ADXL345Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Accel Y"
         self._attr_native_unit_of_measurement = SPEED_METERS_PER_SECOND + "²"
+        self._attr_icon = "mdi:axis-y-arrow"
 
     @property
     def unique_id(self):
@@ -240,6 +242,7 @@ class ADXL345AccelZSensor(ADXL345Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Accel Z"
         self._attr_native_unit_of_measurement = SPEED_METERS_PER_SECOND + "²"
+        self._attr_icon = "mdi:axis-z-arrow"
 
     @property
     def unique_id(self):
@@ -251,3 +254,29 @@ class ADXL345AccelZSensor(ADXL345Entity, SensorEntity):
         self._attr_native_value = Decimal(self.coordinator.i2c_adxl345.accel_z)
 
         self.async_write_ha_state()
+
+
+class ADXL345PowerSwitch(ADXL345Entity, SwitchEntity):
+    """integration_blueprint switch class."""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "ADXL345 Power"
+        self._attr_device_class = DEVICE_CLASS_OUTLET
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return super().unique_id + "power"
+
+    async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
+        """Turn on the switch."""
+        self.coordinator.i2c_adxl345.enable_measurement()
+
+    async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
+        """Turn off the switch."""
+        self.coordinator.i2c_adxl345.disable_measurement()
+
+    @property
+    def is_on(self) -> bool | None:
+        return self.coordinator.i2c_adxl345.is_enabled
