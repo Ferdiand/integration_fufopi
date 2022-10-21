@@ -9,7 +9,8 @@
   "requirements": [
     "pyserial",
     "pigpio",
-    "pigpio-dht"
+    "pigpio-dht",
+    "smbus"
   ],
   "codeowners": [
     "@ferdiand"
