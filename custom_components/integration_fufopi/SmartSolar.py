@@ -263,6 +263,9 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via serial com"""
+
+        self.logger.warning(f"{self.i2c_adxl345.getAxes()}")
+
         if self.simulation is True:
             return self._data
 
