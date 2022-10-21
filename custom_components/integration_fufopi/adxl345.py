@@ -164,9 +164,8 @@ class ADXL345:
 class ADXL345Entity(CoordinatorEntity):
     """Power distribution base entity"""
 
-    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self.config_entry = config_entry
         self.address = 0x53
 
