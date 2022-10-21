@@ -86,7 +86,7 @@ class ADXL345:
         Returns the read value.
         """
         raw_bandwidth_rate = self.bus.read_byte_data(self.address, BANDWIDTH_RATE_REG)
-        return raw_bandwidth_rate & 0x0F
+        return raw_bandwidth_rate
 
     @bandwidth_rate.setter
     def bandwidth_rate(self, new_rate):
@@ -300,8 +300,8 @@ class ADXL345RangeSensor(ADXL345Entity, SensorEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Range"
-        self._attr_unit_of_measurement = "G"
-        self._attr_icon = " "
+        self._attr_native_unit_of_measurement = "G"
+        self._attr_icon = "mdi:arrow-expand-horizontal"
 
     @property
     def unique_id(self):
@@ -333,7 +333,7 @@ class ADXL345BandwidthSensor(ADXL345Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Bandwidth rate"
         self._attr_device_class = DEVICE_CLASS_FREQUENCY
-        self._attr_unit_of_measurement = FREQUENCY_HERTZ
+        self._attr_native_unit_of_measurement = FREQUENCY_HERTZ
 
     @property
     def unique_id(self):
