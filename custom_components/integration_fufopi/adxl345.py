@@ -82,7 +82,7 @@ class ADXL345:
         raw_bandwidth_rate = self.bus.read_byte_data(self.address, BANDWIDTH_RATE_REG)
         return raw_bandwidth_rate & 0x0F
 
-    @bandwidth_rate.sette
+    @bandwidth_rate.setter
     def bandwidth_rate(self, new_rate):
         """Changes the bandwidth rate by writing rate to BANDWIDTH_RATE_REG.
         rate -- the bandwidth rate the ADXL345 will be set to. Using a
