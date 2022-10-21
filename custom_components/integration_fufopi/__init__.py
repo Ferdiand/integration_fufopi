@@ -14,8 +14,6 @@ from unicodedata import decimal
 import serial
 import time
 import random
-import pigpio
-import smbus
 from pigpio import pi
 from pigpio_dht import DHT22
 from datetime import datetime

@@ -29,6 +29,7 @@ from datetime import timedelta
 from pigpio import pi
 from .relay_board import RelayBoardPigPio
 from .const import DOMAIN, ATTRIBUTION
+from .adxl345 import ADXL345
 
 
 PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
@@ -130,7 +131,7 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
 
         self.pigpio = pi("172.30.33.0")
 
-        self.i2c_adxl345 = self.pigpio.i2c_open(1, 0x53)
+        self.i2c_adxl345 = ADXL345()
 
         self.relay_board = RelayBoardPigPio(self.pigpio)
 
