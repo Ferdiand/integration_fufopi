@@ -301,6 +301,7 @@ class ADXL345RangeSensor(ADXL345Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Range"
         self._attr_unit_of_measurement = "G"
+        self._attr_icon = " "
 
     @property
     def unique_id(self):
@@ -330,7 +331,7 @@ class ADXL345BandwidthSensor(ADXL345Entity, SensorEntity):
 
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
-        self._attr_name = "Bandwidth"
+        self._attr_name = "Bandwidth rate"
         self._attr_device_class = DEVICE_CLASS_FREQUENCY
         self._attr_unit_of_measurement = FREQUENCY_HERTZ
 
@@ -341,7 +342,7 @@ class ADXL345BandwidthSensor(ADXL345Entity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _bandwidth = self.coordinator.i2c_adxl345.bandwidth
+        _bandwidth = self.coordinator.i2c_adxl345.bandwidth_rate
 
         if _bandwidth == BANDWIDTH_RATE_25HZ:
             self._attr_native_value = Decimal(25)
