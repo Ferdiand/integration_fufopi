@@ -128,7 +128,7 @@ class ADXL345:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * SCALE_MULTIPLIER
+        val = val * SCALE_MULTIPLIER * EARTH_GRAVITY_MS2
 
         return round(val, 4)
 
@@ -141,7 +141,7 @@ class ADXL345:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * SCALE_MULTIPLIER
+        val = val * SCALE_MULTIPLIER * EARTH_GRAVITY_MS2
 
         return round(val, 4)
 
@@ -154,7 +154,7 @@ class ADXL345:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * SCALE_MULTIPLIER
+        val = val * SCALE_MULTIPLIER * EARTH_GRAVITY_MS2
 
         return val
 
