@@ -16,8 +16,6 @@ from homeassistant.const import SPEED_METERS_PER_SECOND
 
 from .const import DOMAIN, ATTRIBUTION
 
-from .SmartSolar import SmartSolarCoordinator
-
 from homeassistant.components.sensor import SensorEntity
 
 
