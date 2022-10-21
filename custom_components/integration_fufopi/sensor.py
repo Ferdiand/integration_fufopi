@@ -63,6 +63,8 @@ from .power_distribution import (
 
 from .fridge import FridgeCurrentSensor, FridgePowerSensor
 
+from .adxl345 import ADXL345AccelXSensor, ADXL345AccelYSensor, ADXL345AccelZSensor
+
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
@@ -111,6 +113,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     _sensors.append(FridgeCurrentSensor(coordinator, entry))
     _sensors.append(FridgePowerSensor(coordinator, entry))
+
+    _sensors.append(ADXL345AccelXSensor(coordinator, entry))
+    _sensors.append(ADXL345AccelYSensor(coordinator, entry))
+    _sensors.append(ADXL345AccelZSensor(coordinator, entry))
 
     # _sensors.append(LoadPowerSensor(coordinator, entry))
 

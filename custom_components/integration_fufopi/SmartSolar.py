@@ -29,8 +29,8 @@ from datetime import timedelta
 from pigpio import pi
 from .relay_board import RelayBoardPigPio
 from .const import DOMAIN, ATTRIBUTION
+from smbus2 import SMBus
 from .adxl345 import ADXL345
-
 
 PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
 
@@ -131,7 +131,18 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
 
         self.pigpio = pi("172.30.33.0")
 
-        self.i2c_adxl345 = ADXL345()
+        # select the correct i2c bus for this revision of Raspberry Pi
+        revision = (
+            [
+                l[12:-1]
+                for l in open("/proc/cpuinfo", "r").readlines()
+                if l[:8] == "Revision"
+            ]
+            + ["0000"]
+        )[0]
+        self.i2c_bus = SMBus(1 if int(revision, 16) >= 4 else 0)
+
+        self.i2c_adxl345 = ADXL345(i2c_bus=self.i2c_bus)
 
         self.relay_board = RelayBoardPigPio(self.pigpio)
 
@@ -263,9 +274,6 @@ class SmartSolarCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via serial com"""
-
-        self.logger.warning(f"{self.i2c_adxl345.getAxes()}")
-
         if self.simulation is True:
             return self._data
 
