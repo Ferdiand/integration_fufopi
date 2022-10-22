@@ -21,15 +21,15 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity, DEVICE_CLASS_OUTLET
 
 from .const import DOMAIN, ATTRIBUTION
-from . import FufoPiCoordinator
+
+# from . import FufoPiCoordinator
 
 
 class ADXL345Entity(CoordinatorEntity):
     """Power distribution base entity"""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self.config_entry = config_entry
         self.address = 0x53
 

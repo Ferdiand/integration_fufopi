@@ -21,15 +21,15 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DOMAIN, ATTRIBUTION
-from . import FufoPiCoordinator
+
+# from . import FufoPiCoordinator
 
 
 class BatteryEntity(CoordinatorEntity):
     """VE Direct base entity"""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self.config_entry = config_entry
 
     @property

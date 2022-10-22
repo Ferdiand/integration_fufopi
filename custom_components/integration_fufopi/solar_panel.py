@@ -17,15 +17,13 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity, STATE_CLASS_TOTAL_INCREASING
 
 from .const import DOMAIN, ATTRIBUTION
-from . import FufoPiCoordinator
 
 
 class SolarPanelEntity(CoordinatorEntity):
     """Solar panel base entity"""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self.config_entry = config_entry
 
     @property

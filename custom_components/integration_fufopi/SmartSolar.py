@@ -18,7 +18,6 @@ from homeassistant.const import (
 )
 
 from .const import DOMAIN, ATTRIBUTION
-from . import FufoPiCoordinator
 
 PID_VALUE_LIST = {"0xA060": "SmartSolar MPPT 100|20 48V"}
 
@@ -85,9 +84,8 @@ ERR_VALUE_LIST = {
 class SmartSolarEntity(CoordinatorEntity):
     """VE Direct base entity"""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self.config_entry = config_entry
 
     @property
@@ -117,7 +115,7 @@ class SmartSolarEntity(CoordinatorEntity):
 class SmartSolarProductIDSensor(SmartSolarEntity, SensorEntity):
     """Smart solar Product ID Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Product ID"
         self._attr_icon = "mdi:identifier"
@@ -137,7 +135,7 @@ class SmartSolarProductIDSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarFirmwareSensor(SmartSolarEntity, SensorEntity):
     """Smart solar Firmware Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Firmware Version"
         self._attr_icon = "mdi:identifier"
@@ -157,7 +155,7 @@ class SmartSolarFirmwareSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarSerialNumberSensor(SmartSolarEntity, SensorEntity):
     """Smart solar serial number Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Serial Number"
         self._attr_icon = "mdi:music-accidental-sharp"
@@ -177,7 +175,7 @@ class SmartSolarSerialNumberSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarCSSensor(SmartSolarEntity, SensorEntity):
     """Smart solar operation state Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "State of operation"
         self._attr_icon = "mdi:car-turbocharger"
@@ -197,7 +195,7 @@ class SmartSolarCSSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarMPPTSensor(SmartSolarEntity, SensorEntity):
     """Smart solar tracker op mode Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Tracker operation mode"
         self._attr_icon = "mdi:radar"
@@ -217,7 +215,7 @@ class SmartSolarMPPTSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarORSensor(SmartSolarEntity, SensorEntity):
     """Smart solar off reason Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Off Reason"
         self._attr_icon = "mdi:playlist-remove"
@@ -237,7 +235,7 @@ class SmartSolarORSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarHSDSSensor(SmartSolarEntity, SensorEntity):
     """Smart solar day seq number Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Day seq number"
 
@@ -256,7 +254,7 @@ class SmartSolarHSDSSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarCheckSumSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Checksum"
 
@@ -275,7 +273,7 @@ class SmartSolarCheckSumSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarErrSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Error reason"
 
@@ -294,7 +292,7 @@ class SmartSolarErrSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarILSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "IL"
         self._attr_device_class = DEVICE_CLASS_CURRENT
@@ -315,7 +313,7 @@ class SmartSolarILSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarISensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "I"
         self._attr_device_class = DEVICE_CLASS_CURRENT
@@ -336,7 +334,7 @@ class SmartSolarISensor(SmartSolarEntity, SensorEntity):
 class SmartSolarVSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "V"
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
@@ -357,7 +355,7 @@ class SmartSolarVSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarVPVSensor(SmartSolarEntity, SensorEntity):
     """Smart solar VPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "VPV"
         self._attr_device_class = DEVICE_CLASS_VOLTAGE
@@ -378,7 +376,7 @@ class SmartSolarVPVSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarPPVSensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "PPV"
         self._attr_device_class = DEVICE_CLASS_POWER
@@ -399,7 +397,7 @@ class SmartSolarPPVSensor(SmartSolarEntity, SensorEntity):
 class SmartSolarH19Sensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "H19"
         self._attr_device_class = DEVICE_CLASS_ENERGY
@@ -420,7 +418,7 @@ class SmartSolarH19Sensor(SmartSolarEntity, SensorEntity):
 class SmartSolarH20Sensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "H20"
         self._attr_device_class = DEVICE_CLASS_ENERGY
@@ -441,7 +439,7 @@ class SmartSolarH20Sensor(SmartSolarEntity, SensorEntity):
 class SmartSolarH21Sensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "H21"
         self._attr_device_class = DEVICE_CLASS_POWER
@@ -462,7 +460,7 @@ class SmartSolarH21Sensor(SmartSolarEntity, SensorEntity):
 class SmartSolarH22Sensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "H22"
         self._attr_device_class = DEVICE_CLASS_ENERGY
@@ -483,7 +481,7 @@ class SmartSolarH22Sensor(SmartSolarEntity, SensorEntity):
 class SmartSolarH23Sensor(SmartSolarEntity, SensorEntity):
     """Smart solar PPV Sensor class."""
 
-    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
+    def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "H23"
         self._attr_device_class = DEVICE_CLASS_POWER

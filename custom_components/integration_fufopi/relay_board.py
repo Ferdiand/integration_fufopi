@@ -1,9 +1,9 @@
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from .const import DOMAIN, ATTRIBUTION
-
 from pigpio import OUTPUT
+
+from .const import DOMAIN, ATTRIBUTION
 
 
 class RelayBoardPigPio:
