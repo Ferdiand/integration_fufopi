@@ -345,3 +345,28 @@ class HCM5883LMagZSensor(HCM5883LEntity, SensorEntity):
         ).quantize(Decimal("1.000"))
 
         self.async_write_ha_state()
+
+
+class HCM5883LContinuosModeSwitch(HCM5883LEntity, SwitchEntity):
+    """HCM5883L Continuos Mode switch class."""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Continuos mode"
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return super().unique_id + "cont mode"
+
+    async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
+        """Turn on the switch."""
+        self.coordinator.i2c_hcm5883.operating_mode = 0
+
+    async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
+        """Turn off the switch."""
+        self.coordinator.i2c_hcm5883.operating_mode = 1
+
+    @property
+    def is_on(self) -> bool | None:
+        return self.coordinator.i2c_hcm5883.operating_mode == 0

@@ -655,9 +655,8 @@ class HCM5883:
         if new_mode < 0 or new_mode > 3:
             raise ValueError(f"Invalid mode requested [0-3]:{new_mode}")
         else:
-            _mode = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
-
-            _new_mode = xor
+            _old_mode = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
+            self.bus.write_i2c_block_data(self.address, self.MODE_ADDR, [new_mode])
 
     @property
     def mag_x(self):
