@@ -18,6 +18,7 @@ from homeassistant.const import (
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_LOCK
+from homeassistant.components.switch import SwitchEntity
 
 from .const import DOMAIN, ATTRIBUTION
 
@@ -287,7 +288,7 @@ class HCM5883LMagXSensor(HCM5883LEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = (
-            Decimal(self.coordinator.i2c_hcm5883.mag_x) * Decimal(0.001)
+            Decimal(self.coordinator.i2c_hcm5883.mag_x)
         ).quantize(Decimal("1.000"))
 
         self.async_write_ha_state()
@@ -310,7 +311,7 @@ class HCM5883LMagYSensor(HCM5883LEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = (
-            Decimal(self.coordinator.i2c_hcm5883.mag_y) * Decimal(0.001)
+            Decimal(self.coordinator.i2c_hcm5883.mag_y)
         ).quantize(Decimal("1.000"))
 
         self.async_write_ha_state()
@@ -333,7 +334,7 @@ class HCM5883LMagZSensor(HCM5883LEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = (
-            Decimal(self.coordinator.i2c_hcm5883.mag_z) * Decimal(0.001)
+            Decimal(self.coordinator.i2c_hcm5883.mag_z)
         ).quantize(Decimal("1.000"))
 
         self.async_write_ha_state()

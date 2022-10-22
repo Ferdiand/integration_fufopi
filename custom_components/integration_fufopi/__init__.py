@@ -7,6 +7,7 @@ https://github.com/custom-components/integration_blueprint
 import asyncio
 from datetime import timedelta
 import logging
+from operator import xor
 import serial
 
 import random
@@ -649,6 +650,15 @@ class HCM5883:
 
         return val
 
+    @operating_mode.setter
+    def operating_mode(self, new_mode):
+        if new_mode < 0 or new_mode > 3:
+            raise ValueError(f"Invalid mode requested [0-3]:{new_mode}")
+        else:
+            _mode = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
+
+            _new_mode = xor
+
     @property
     def mag_x(self):
         """return the meassurament in X axis"""
@@ -658,7 +668,7 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * self.resolution
+        val = val / self.gain
 
         return round(val, 4)
 
@@ -671,7 +681,7 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * self.resolution
+        val = val / self.gain
 
         return round(val, 4)
 
@@ -684,7 +694,7 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
-        val = val * self.resolution
+        val = val / self.gain
 
         return round(val, 4)
 
