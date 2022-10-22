@@ -548,7 +548,7 @@ class HCM5883:
         00 = 1(Default); 01 = 2; 10 = 4; 11 = 8"""
         _confi_a = self.bus.read_i2c_block_data(self.address, self.CONFIG_A_ADDR, 1)
 
-        val = _confi_a & self.SAMPLE_NO_MASK
+        val = _confi_a[0] & self.SAMPLE_NO_MASK
         val = val >> 5
 
         return self.SAMPLE_NO_LIST[val]
@@ -559,7 +559,7 @@ class HCM5883:
         b000 -> 0.75, b001 -> 1.5, b010 -> 3, b011 -> 7.5, b100 -> 15 (Default), b101 -> 30, b110 -> 75, b111 -> Reserved"""
         _confi_a = self.bus.read_i2c_block_data(self.address, self.CONFIG_A_ADDR, 1)
 
-        val = _confi_a & self.OUTPUT_RATE_MASK
+        val = _confi_a[0] & self.OUTPUT_RATE_MASK
         val = val >> 2
 
         return self.OUTPUT_RATE_LIST[val]
@@ -571,7 +571,7 @@ class HCM5883:
         to incorporate an applied bias into the measurement."""
         _confi_a = self.bus.read_i2c_block_data(self.address, self.CONFIG_A_ADDR, 1)
 
-        val = _confi_a & self.MEAS_CONFIG_MASK
+        val = _confi_a[0] & self.MEAS_CONFIG_MASK
 
         return val
 
@@ -583,7 +583,7 @@ class HCM5883:
         return Gain (LSb/Gauss)"""
         _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
 
-        val = _confi_b & self.GAIN_CONFIG_MASK
+        val = _confi_b[0] & self.GAIN_CONFIG_MASK
         val = val >> 5
 
         return self.GAIN_LIST[val]
@@ -594,7 +594,7 @@ class HCM5883:
         return Recommended Sensor Field Range (Gauss)"""
         _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
 
-        val = _confi_b & self.GAIN_CONFIG_MASK
+        val = _confi_b[0] & self.GAIN_CONFIG_MASK
         val = val >> 5
 
         return self.SENSOR_RANGE_LIST[val]
@@ -605,7 +605,7 @@ class HCM5883:
         return Digital Resolution (mG/LSb)"""
         _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
 
-        val = _confi_b & self.GAIN_CONFIG_MASK
+        val = _confi_b[0] & self.GAIN_CONFIG_MASK
         val = val >> 5
 
         return self.RESOLUTION_LIST[val]
@@ -615,7 +615,7 @@ class HCM5883:
         """Set this pin to enable High Speed I2C, 3400kHz"""
         _mode = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
 
-        val = _mode & self.I2C_HIGH_SPEED_MASK
+        val = _mode[0] & self.I2C_HIGH_SPEED_MASK
 
         if val > 0:
             return True
@@ -643,7 +643,7 @@ class HCM5883:
         3 -> Idle Mode. Device is placed in idle mode."""
         _mode = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
 
-        val = _mode & self.OPERATING_MODE_MASK
+        val = _mode[0] & self.OPERATING_MODE_MASK
 
         return val
 
@@ -700,7 +700,7 @@ class HCM5883:
 
         _status = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
 
-        val = _status & self.STATUS_LOCKED_MASK
+        val = _status[0] & self.STATUS_LOCKED_MASK
 
         if val > 0:
             return True
@@ -719,7 +719,7 @@ class HCM5883:
 
         _status = self.bus.read_i2c_block_data(self.address, self.MODE_ADDR, 1)
 
-        val = _status & self.STATUS_READY_MASK
+        val = _status[0] & self.STATUS_READY_MASK
 
         if val > 0:
             return True
