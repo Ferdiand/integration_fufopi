@@ -1,4 +1,3 @@
-from ast import Str
 from decimal import Decimal
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -22,13 +21,13 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DOMAIN, ATTRIBUTION
-from .SmartSolar import SmartSolarCoordinator
+from . import FufoPiCoordinator
 
 
 class BatteryEntity(CoordinatorEntity):
     """VE Direct base entity"""
 
-    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
         super().__init__(coordinator)
         self.coordinator = coordinator
         self.config_entry = config_entry
@@ -73,9 +72,9 @@ class BatteryVoltageSensor(BatteryEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.battery_voltage) * Decimal(
-            0.001
-        ).quantize(Decimal("1.000"))
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.battery_voltage
+        ) * Decimal(0.001).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
 
@@ -96,7 +95,7 @@ class BatteryCurrentSensor(BatteryEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = (
-            Decimal(self.coordinator.battery_current) * Decimal(0.001)
+            Decimal(self.coordinator.smart_solar.battery_current) * Decimal(0.001)
         ).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
@@ -117,8 +116,8 @@ class PowerToBattSensor(BatteryEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
-        _i = Decimal(self.coordinator.battery_current) * Decimal(0.001)
+        _v = Decimal(self.coordinator.smart_solar.battery_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.smart_solar.battery_current) * Decimal(0.001)
 
         if _i > Decimal(0):
             self._attr_native_value = (_v * _i).quantize(Decimal("1.000"))
@@ -144,8 +143,8 @@ class PowerFromBattSensor(BatteryEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
-        _i = Decimal(self.coordinator.battery_current) * Decimal(0.001)
+        _v = Decimal(self.coordinator.smart_solar.battery_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.smart_solar.battery_current) * Decimal(0.001)
 
         if _i < Decimal(0):
             self._attr_native_value = (_v * _i * Decimal(-1.0)).quantize(
@@ -172,7 +171,7 @@ class BatteryStateBinarySensor(BatteryEntity, BinarySensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _i = Decimal(self.coordinator.battery_current)
+        _i = Decimal(self.coordinator.smart_solar.battery_current)
 
         if _i > Decimal(0):
             self._attr_is_on = True
@@ -209,7 +208,9 @@ class BatteryPerCentSensor(BatteryEntity, SensorEntity):
         ]
 
         _min_voltage, _min_per_cent = _data[0]
-        _voltage = Decimal(self.coordinator.battery_voltage) * Decimal(0.001)
+        _voltage = Decimal(self.coordinator.smart_solar.battery_voltage) * Decimal(
+            0.001
+        )
 
         self._attr_native_value = Decimal(0)
 

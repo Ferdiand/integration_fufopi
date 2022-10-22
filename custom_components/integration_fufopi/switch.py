@@ -1,7 +1,5 @@
 """Switch platform for integration_blueprint."""
-
-import imp
-from .const import DEFAULT_NAME, DOMAIN, ICON, SWITCH
+from .const import DOMAIN
 from .relay_board import RelayBoardBinarySwitch
 from .fridge import FridgePowerSwitch
 from .adxl345 import ADXL345PowerSwitch

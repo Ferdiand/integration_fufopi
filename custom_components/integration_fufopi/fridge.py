@@ -5,17 +5,10 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.core import callback
 
 from homeassistant.const import (
-    ELECTRIC_POTENTIAL_VOLT,
-    DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_CURRENT,
     ELECTRIC_CURRENT_AMPERE,
     DEVICE_CLASS_POWER,
     POWER_WATT,
-)
-
-from homeassistant.components.binary_sensor import (
-    BinarySensorEntity,
-    DEVICE_CLASS_BATTERY_CHARGING,
 )
 
 from homeassistant.components.switch import SwitchEntity, DEVICE_CLASS_OUTLET
@@ -23,13 +16,13 @@ from homeassistant.components.switch import SwitchEntity, DEVICE_CLASS_OUTLET
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DOMAIN, ATTRIBUTION
-from .SmartSolar import SmartSolarCoordinator
+from . import FufoPiCoordinator
 
 
 class FridgeEntity(CoordinatorEntity):
     """Power distribution base entity"""
 
-    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
         super().__init__(coordinator)
         self.coordinator = coordinator
         self.config_entry = config_entry
@@ -62,7 +55,7 @@ class FridgeEntity(CoordinatorEntity):
 class FridgePowerSwitch(FridgeEntity, SwitchEntity):
     """integration_blueprint switch class."""
 
-    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_name = "Fridge Power"
         self._attr_device_class = DEVICE_CLASS_OUTLET
@@ -105,8 +98,8 @@ class FridgeCurrentSensor(FridgeEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.panel_voltage) * Decimal(0.001)
-        _i = Decimal(self.coordinator.load_current) * Decimal(0.001)
+        _v = Decimal(self.coordinator.smart_solar.panel_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.smart_solar.load_current) * Decimal(0.001)
         _i = _i - Decimal(0.5)
         if self.coordinator.relay_board.relay[self.relay_index].is_on:
             self._attr_native_value = _i.quantize(Decimal("1.000"))
@@ -132,8 +125,8 @@ class FridgePowerSensor(FridgeEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.panel_voltage) * Decimal(0.001)
-        _i = Decimal(self.coordinator.load_current) * Decimal(0.001)
+        _v = Decimal(self.coordinator.smart_solar.panel_voltage) * Decimal(0.001)
+        _i = Decimal(self.coordinator.smart_solar.load_current) * Decimal(0.001)
         _i = _i - Decimal(0.5)
         if self.coordinator.relay_board.relay[self.relay_index].is_on:
             self._attr_native_value = (_i * _v).quantize(Decimal("1.000"))

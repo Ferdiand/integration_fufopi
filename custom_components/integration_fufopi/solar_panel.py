@@ -17,13 +17,13 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity, STATE_CLASS_TOTAL_INCREASING
 
 from .const import DOMAIN, ATTRIBUTION
-from .SmartSolar import SmartSolarCoordinator
+from . import FufoPiCoordinator
 
 
 class SolarPanelEntity(CoordinatorEntity):
     """Solar panel base entity"""
 
-    def __init__(self, coordinator: SmartSolarCoordinator, config_entry):
+    def __init__(self, coordinator: FufoPiCoordinator, config_entry):
         super().__init__(coordinator)
         self.coordinator = coordinator
         self.config_entry = config_entry
@@ -68,9 +68,9 @@ class SolarPanelVoltageSensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.panel_voltage) * Decimal(
-            0.001
-        ).quantize(Decimal("1.000"))
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.panel_voltage
+        ) * Decimal(0.001).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
 
@@ -90,8 +90,8 @@ class SolarPanelCurrentSensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _v = Decimal(self.coordinator.panel_voltage) * Decimal(0.001)
-        _p = Decimal(self.coordinator.panel_power)
+        _v = Decimal(self.coordinator.smart_solar.panel_voltage) * Decimal(0.001)
+        _p = Decimal(self.coordinator.smart_solar.panel_power)
         if _v > Decimal(0):
             self._attr_native_value = (_p / _v).quantize(Decimal("1.000"))
         else:
@@ -116,7 +116,7 @@ class SolarPanelPowerSensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.panel_power)
+        self._attr_native_value = Decimal(self.coordinator.smart_solar.panel_power)
         self.async_write_ha_state()
 
 
@@ -136,7 +136,7 @@ class SolarPanelMaxPowerTodaySensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.max_power_today)
+        self._attr_native_value = Decimal(self.coordinator.smart_solar.max_power_today)
         self.async_write_ha_state()
 
 
@@ -156,7 +156,9 @@ class SolarPanelMaxPowerYesterdaySensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.max_power_yesterday)
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.max_power_yesterday
+        )
         self.async_write_ha_state()
 
 
@@ -177,9 +179,9 @@ class SolarPanelProductionTodaySensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.yield_today) * Decimal(
-            0.01
-        ).quantize(Decimal("1.000"))
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.yield_today
+        ) * Decimal(0.01).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
 
@@ -199,9 +201,9 @@ class SolarPanelProductionYesterdaySensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.yield_yesterday) * Decimal(
-            0.01
-        ).quantize(Decimal("1.000"))
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.yield_yesterday
+        ) * Decimal(0.01).quantize(Decimal("1.000"))
         self.async_write_ha_state()
 
 
@@ -221,7 +223,7 @@ class SolarPanelProductionTotalSensor(SolarPanelEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(self.coordinator.yield_total) * Decimal(
-            0.01
-        ).quantize(Decimal("1.000"))
+        self._attr_native_value = Decimal(
+            self.coordinator.smart_solar.yield_total
+        ) * Decimal(0.01).quantize(Decimal("1.000"))
         self.async_write_ha_state()

@@ -1,11 +1,4 @@
 """Binary sensor platform for integration_blueprint."""
-from homeassistant.components.binary_sensor import (
-    BinarySensorEntity,
-    DEVICE_CLASS_BATTERY_CHARGING,
-)
-
-from decimal import Decimal
-
 from .const import (
     DOMAIN,
 )
