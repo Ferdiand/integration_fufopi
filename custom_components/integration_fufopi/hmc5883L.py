@@ -286,7 +286,7 @@ class HCM5883LMagXSensor(HCM5883LEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(
+        self._attr_native_value = (
             Decimal(self.coordinator.i2c_hcm5883.mag_x) * Decimal(0.001)
         ).quantize(Decimal("1.000"))
 
@@ -309,7 +309,7 @@ class HCM5883LMagYSensor(HCM5883LEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(
+        self._attr_native_value = (
             Decimal(self.coordinator.i2c_hcm5883.mag_y) * Decimal(0.001)
         ).quantize(Decimal("1.000"))
 
@@ -332,7 +332,7 @@ class HCM5883LMagZSensor(HCM5883LEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = Decimal(
+        self._attr_native_value = (
             Decimal(self.coordinator.i2c_hcm5883.mag_z) * Decimal(0.001)
         ).quantize(Decimal("1.000"))
 
