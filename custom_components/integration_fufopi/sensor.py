@@ -71,6 +71,19 @@ from .adxl345 import (
     ADXL345RangeSensor,
 )
 
+from .hmc5883L import (
+    HCM5883LGainSensor,
+    HCM5883LMagXSensor,
+    HCM5883LMagYSensor,
+    HCM5883LMagZSensor,
+    HCM5883LMeasureConfigSensor,
+    HCM5883LOperationModeSensor,
+    HCM5883LOutputRateSensor,
+    HCM5883LRangeSensor,
+    HCM5883LResolutionSensor,
+    HCM5883LSampleNoSensor,
+)
+
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
@@ -125,6 +138,17 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(ADXL345AccelZSensor(coordinator, entry))
     _sensors.append(ADXL345BandwidthSensor(coordinator, entry))
     _sensors.append(ADXL345RangeSensor(coordinator, entry))
+
+    _sensors.append(HCM5883LGainSensor(coordinator, entry))
+    _sensors.append(HCM5883LMagXSensor(coordinator, entry))
+    _sensors.append(HCM5883LMagYSensor(coordinator, entry))
+    _sensors.append(HCM5883LMagZSensor(coordinator, entry))
+    _sensors.append(HCM5883LMeasureConfigSensor(coordinator, entry))
+    _sensors.append(HCM5883LOperationModeSensor(coordinator, entry))
+    _sensors.append(HCM5883LOutputRateSensor(coordinator, entry))
+    _sensors.append(HCM5883LRangeSensor(coordinator, entry))
+    _sensors.append(HCM5883LResolutionSensor(coordinator, entry))
+    _sensors.append(HCM5883LSampleNoSensor(coordinator, entry))
 
     # _sensors.append(LoadPowerSensor(coordinator, entry))
 

@@ -1,4 +1,3 @@
-from ast import Str
 from decimal import Decimal
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity

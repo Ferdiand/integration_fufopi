@@ -119,6 +119,9 @@ class FufoPiCoordinator(DataUpdateCoordinator):
 
         self.smart_solar = SmartSolar(logger=logger)
 
+        self.pigpio = pi("172.30.33.0")
+        self.relay_board = RelayBoardPigPio(self.pigpio)
+
         # select the correct i2c bus for this revision of Raspberry Pi
         revision = (
             [
@@ -131,9 +134,7 @@ class FufoPiCoordinator(DataUpdateCoordinator):
         self.i2c_bus = SMBus(1 if int(revision, 16) >= 4 else 0)
 
         self.i2c_adxl345 = ADXL345(i2c_bus=self.i2c_bus)
-
-        self.pigpio = pi("172.30.33.0")
-        self.relay_board = RelayBoardPigPio(self.pigpio)
+        self.i2c_hcm5883 = HCM5883(i2c_bus=self.i2c_bus)
 
     async def _async_update_data(self):
         """Update data via serial com"""
@@ -497,6 +498,17 @@ class HCM5883:
     # Config B register masks
     GAIN_CONFIG_MASK = 0xE0
     GAIN_LIST = [
+        1370,
+        1090,
+        820,
+        660,
+        440,
+        390,
+        330,
+        230,
+    ]  # Gain (LSb/Gauss)
+
+    SENSOR_RANGE_LIST = [
         0.88,
         1.3,
         1.9,
@@ -505,7 +517,18 @@ class HCM5883:
         4.7,
         5.6,
         8.1,
-    ]  # Recommended Sensor Field Range in Ga
+    ]  # Sensor range (Gauss)
+
+    RESOLUTION_LIST = [
+        0.73,
+        0.92,
+        1.22,
+        1.52,
+        2.27,
+        2.56,
+        3.03,
+        4.35,
+    ]  # Digital Resolution (mG/LSb)
 
     # Mode register masks
     I2C_HIGH_SPEED_MASK = 0x80
@@ -515,7 +538,7 @@ class HCM5883:
     STATUS_LOCKED_MASK = 0x02
     STATUS_READY_MASK = 0x01
 
-    def __init__(self, i2c_bus: SMBus, address=0x53):
+    def __init__(self, i2c_bus: SMBus, address=0x1E):
         self.address = address
         self.bus = i2c_bus
 
@@ -557,13 +580,35 @@ class HCM5883:
         """Gain Configuration Bits. These bits configure the gain for
         the device. The gain configuration is common for all
         channels
-        return Recommended Sensor Field Range in Ga"""
+        return Gain (LSb/Gauss)"""
         _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
 
         val = _confi_b & self.GAIN_CONFIG_MASK
         val = val >> 5
 
         return self.GAIN_LIST[val]
+
+    @property
+    def sensor_range(self):
+        """
+        return Recommended Sensor Field Range (Gauss)"""
+        _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
+
+        val = _confi_b & self.GAIN_CONFIG_MASK
+        val = val >> 5
+
+        return self.SENSOR_RANGE_LIST[val]
+
+    @property
+    def resolution(self):
+        """
+        return Digital Resolution (mG/LSb)"""
+        _confi_b = self.bus.read_i2c_block_data(self.address, self.CONFIG_B_ADDR, 1)
+
+        val = _confi_b & self.GAIN_CONFIG_MASK
+        val = val >> 5
+
+        return self.RESOLUTION_LIST[val]
 
     @property
     def i2c_high_speed(self):
@@ -611,6 +656,8 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
+        val = val * self.resolution
+
         return round(val, 4)
 
     @property
@@ -622,6 +669,8 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
+        val = val * self.resolution
+
         return round(val, 4)
 
     @property
@@ -632,6 +681,8 @@ class HCM5883:
         val = _bytes[0] | (_bytes[1] << 8)
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
+
+        val = val * self.resolution
 
         return round(val, 4)
 
