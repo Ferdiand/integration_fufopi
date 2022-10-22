@@ -54,6 +54,13 @@ class HCM5883LEntity(CoordinatorEntity):
             "integration": DOMAIN,
         }
 
+    def _scale(self, x, upper, lower):
+        _x1, _y1 = lower
+        _x2, _y2 = upper
+        _m = (_y2 - _y1) / (_x2 - _x1)
+        _n = _m * _x1 - _y1
+        return x * _m - _n
+
 
 class HCM5883LSampleNoSensor(HCM5883LEntity, SensorEntity):
     """sample no sensor"""

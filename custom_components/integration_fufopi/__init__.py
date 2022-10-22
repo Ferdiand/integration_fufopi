@@ -668,6 +668,8 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
+        val = self._scale(val, (0x07FF, 2047), (0xF800, -2048))
+
         val = val / self.gain
 
         return round(val, 4)
@@ -681,6 +683,8 @@ class HCM5883:
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
 
+        val = self._scale(val, (0x07FF, 2047), (0xF800, -2048))
+
         val = val / self.gain
 
         return round(val, 4)
@@ -693,6 +697,8 @@ class HCM5883:
         val = _bytes[0] | (_bytes[1] << 8)
         if val & (1 << 16 - 1):
             val = val - (1 << 16)
+
+        val = self._scale(val, (0x07FF, 2047), (0xF800, -2048))
 
         val = val / self.gain
 
@@ -737,3 +743,10 @@ class HCM5883:
             return True
 
         return False
+
+    def _scale(self, x, upper, lower):
+        _x1, _y1 = lower
+        _x2, _y2 = upper
+        _m = (_y2 - _y1) / (_x2 - _x1)
+        _n = _m * _x1 - _y1
+        return x * _m - _n
