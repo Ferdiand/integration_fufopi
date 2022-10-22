@@ -542,7 +542,7 @@ class HCM5883:
         self.address = address
         self.bus = i2c_bus
 
-        self.bus.write_i2c_block_data(self.address, self.MODE_ADDR, 0x0)
+        self.bus.write_i2c_block_data(self.address, self.MODE_ADDR, [0x00])
 
     @property
     def sample_no(self):
