@@ -26,7 +26,6 @@ class RelayPigPio:
     def __init__(self, pin_no, inverted=False) -> None:
         GPIO.setup(pin_no, GPIO.OUT)
         self._pin_no = pin_no
-        self._pi = pi
         self._inverted = inverted
         self.relay_off()
 
