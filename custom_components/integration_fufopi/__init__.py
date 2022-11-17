@@ -15,7 +15,6 @@ import struct
 import random
 from pigpio import pi
 from smbus2 import SMBus
-import RPi.GPIO as GPIO
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
@@ -124,7 +123,7 @@ class FufoPiCoordinator(DataUpdateCoordinator):
         self.smart_solar = SmartSolar(logger=logger)
 
         # self.pigpio = pi("172.30.33.0")
-        # self.relay_board = RelayBoardPigPio(self.pigpio)
+        self.relay_board = RelayBoardPigPio()
 
         # select the correct i2c bus for this revision of Raspberry Pi
         revision = (
@@ -141,15 +140,11 @@ class FufoPiCoordinator(DataUpdateCoordinator):
         # self.i2c_hcm5883 = HCM5883(i2c_bus=self.i2c_bus)
         self.ads1115 = ADS1115weno(i2c=self.i2c_bus)
 
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(18, GPIO.OUT)
-
     async def _async_update_data(self):
         """Update data via serial com"""
         self._data = await self.smart_solar._async_update_data()
         value = await self.ads1115.readADCSingleEnded(0)
         self.logger.warning(f"{value}")
-        GPIO.output(18, GPIO.HIGH)
         return self._data
 
 

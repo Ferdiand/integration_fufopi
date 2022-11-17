@@ -1,7 +1,7 @@
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from pigpio import OUTPUT
+import RPi.GPIO as GPIO
 
 from .const import DOMAIN, ATTRIBUTION
 
@@ -9,27 +9,21 @@ from .const import DOMAIN, ATTRIBUTION
 class RelayBoardPigPio:
     """PigPio relay board class"""
 
-    def __init__(self, pi) -> None:
+    def __init__(self) -> None:
         # Initialite pigpio pi
-        self.pig = pi
         self.relay = [
-            RelayPigPio(18, self.pig, True),
-            RelayPigPio(23, self.pig, True),
-            RelayPigPio(17, self.pig, True),
-            RelayPigPio(27, self.pig, True),
+            RelayPigPio(18, True),
+            RelayPigPio(23, True),
+            RelayPigPio(24, True),
+            RelayPigPio(27, True),
         ]
-
-    @property
-    def is_conected(self):
-        """return if pigpio is connected"""
-        return self.pig.connected
 
 
 class RelayPigPio:
     """Pigpio relay class"""
 
-    def __init__(self, pin_no, pi, inverted=False) -> None:
-        pi.set_mode(pin_no, OUTPUT)
+    def __init__(self, pin_no, inverted=False) -> None:
+        GPIO.setup(pin_no, GPIO.OUT)
         self._pin_no = pin_no
         self._pi = pi
         self._inverted = inverted
@@ -38,7 +32,7 @@ class RelayPigPio:
     @property
     def is_on(self):
         """Return if relay is on or not"""
-        if self._pi.read(self._pin_no) == 1:
+        if GPIO.input(self._pin_no) == 1:
             if self._inverted is True:
                 return False
             else:
@@ -52,16 +46,16 @@ class RelayPigPio:
     def relay_on(self):
         """Switch relay on"""
         if self._inverted is True:
-            self._pi.write(self._pin_no, 0)
+            GPIO.output(self._pin_no, 0)
         else:
-            self._pi.write(self._pin_no, 1)
+            GPIO.output(self._pin_no, 1)
 
     def relay_off(self):
         """Switch relay off"""
         if self._inverted is True:
-            self._pi.write(self._pin_no, 1)
+            GPIO.output(self._pin_no, 1)
         else:
-            self._pi.write(self._pin_no, 0)
+            GPIO.output(self._pin_no, 0)
 
 
 class RelayBoardEntity(CoordinatorEntity):

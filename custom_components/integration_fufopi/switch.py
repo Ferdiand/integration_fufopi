@@ -11,11 +11,11 @@ async def async_setup_entry(hass, entry, async_add_devices):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
         [
-            # RelayBoardBinarySwitch(coordinator, entry, 0),
-            # RelayBoardBinarySwitch(coordinator, entry, 1),
-            # RelayBoardBinarySwitch(coordinator, entry, 2),
-            # RelayBoardBinarySwitch(coordinator, entry, 3),
-            # FridgePowerSwitch(coordinator, entry),
+            RelayBoardBinarySwitch(coordinator, entry, 0),
+            RelayBoardBinarySwitch(coordinator, entry, 1),
+            RelayBoardBinarySwitch(coordinator, entry, 2),
+            RelayBoardBinarySwitch(coordinator, entry, 3),
+            FridgePowerSwitch(coordinator, entry),
             # ADXL345PowerSwitch(coordinator, entry),
             # HCM5883LContinuosModeSwitch(coordinator, entry),
         ]
