@@ -81,7 +81,18 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        _raw_value = self.coordinator.data[f"ads1115_ch{self._sensor_no}"]
-        self._attr_native_value = (_raw_value - 2500) / self.sensibility
-        self._attr_extra_state_attributes = [f"ads1115_ch{self._sensor_no}", _raw_value]
+        _sensor_value = self.coordinator.data[f"ads1115_ch{self._sensor_no}"]
+
+        _raw_value = (_sensor_value - 2500) / self.sensibility
+
+        self._attr_native_value = Decimal(_raw_value).quantize(Decimal("0.01"))
+
+        self._attr_extra_state_attributes = {
+            "integration": DOMAIN,
+            "adschannel": f"ch{self._sensor_no}",
+            "sensor_value": _sensor_value,
+            "sensor_units": ELECTRIC_POTENTIAL_MILLIVOLT,
+            "sensibility": f"{self.sensibility} mV/A",
+            "raw value": _raw_value,
+        }
         self.async_write_ha_state()
