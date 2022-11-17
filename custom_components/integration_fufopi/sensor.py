@@ -84,6 +84,8 @@ from .hmc5883L import (
     HCM5883LSampleNoSensor,
 )
 
+from .ads1115 import ADS1115Channel0, ADS1115Channel1, ADS1115Channel2, ADS1115Channel3
+
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
@@ -132,6 +134,11 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     _sensors.append(FridgeCurrentSensor(coordinator, entry))
     _sensors.append(FridgePowerSensor(coordinator, entry))
+
+    _sensors.append(ADS1115Channel0(coordinator, entry))
+    _sensors.append(ADS1115Channel1(coordinator, entry))
+    _sensors.append(ADS1115Channel2(coordinator, entry))
+    _sensors.append(ADS1115Channel3(coordinator, entry))
 
     #    _sensors.append(ADXL345AccelXSensor(coordinator, entry))
     #    _sensors.append(ADXL345AccelYSensor(coordinator, entry))

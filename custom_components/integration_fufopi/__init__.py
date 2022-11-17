@@ -143,8 +143,10 @@ class FufoPiCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via serial com"""
         self._data = await self.smart_solar._async_update_data()
-        value = await self.ads1115.readADCSingleEnded(0)
-        self.logger.warning(f"{value}")
+        self._data["ads1115_ch0"] = await self.ads1115.read_channel(0)
+        self._data["ads1115_ch1"] = await self.ads1115.read_channel(1)
+        self._data["ads1115_ch2"] = await self.ads1115.read_channel(2)
+        self._data["ads1115_ch3"] = await self.ads1115.read_channel(3)
         return self._data
 
 
@@ -1014,7 +1016,7 @@ class ADS1115(ADS1x15):
 
 
 class ADS1115weno:
-    i2c = None
+    """ADS1115"""
 
     # IC Identifiers
     __IC_ADS1115 = 0x01
@@ -1132,7 +1134,7 @@ class ADS1115weno:
         # any function that accepts a pga value must update this.
         self.pga = 6144
 
-    async def readADCSingleEnded(self, channel=0, pga=6144, sps=250):
+    async def read_channel(self, channel=0, pga=6144, sps=250):
         """
         Gets a single-ended ADC reading from the specified channel in mV.
         The sample rate for this mode (single-shot) can be used to lower the noise
