@@ -86,6 +86,8 @@ from .hmc5883L import (
 
 from .ads1115 import ADS1115Channel0, ADS1115Channel1, ADS1115Channel2, ADS1115Channel3
 
+from .acs714 import ACS712Sensor
+
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
@@ -139,6 +141,11 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(ADS1115Channel1(coordinator, entry))
     _sensors.append(ADS1115Channel2(coordinator, entry))
     _sensors.append(ADS1115Channel3(coordinator, entry))
+
+    _sensors.append(ACS712Sensor(coordinator, entry, 0))
+    _sensors.append(ACS712Sensor(coordinator, entry, 1))
+    _sensors.append(ACS712Sensor(coordinator, entry, 2))
+    _sensors.append(ACS712Sensor(coordinator, entry, 3))
 
     #    _sensors.append(ADXL345AccelXSensor(coordinator, entry))
     #    _sensors.append(ADXL345AccelYSensor(coordinator, entry))
