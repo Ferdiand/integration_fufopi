@@ -10,7 +10,8 @@
     "pyserial",
     "pigpio",
     "pigpio-dht",
-    "smbus2"
+    "smbus2",
+    "RPi.GPIO"
   ],
   "codeowners": [
     "@ferdiand"
