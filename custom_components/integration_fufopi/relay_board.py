@@ -90,11 +90,6 @@ class RelayBoardEntity(CoordinatorEntity):
             "integration": DOMAIN,
         }
 
-    @property
-    def available(self) -> bool:
-        _pig = self.coordinator.relay_board.pig
-        return _pig.connected
-
 
 class RelayBoardBinarySwitch(RelayBoardEntity, SwitchEntity):
     """integration_blueprint switch class."""
