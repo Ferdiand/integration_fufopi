@@ -11,6 +11,7 @@ class RelayBoardPigPio:
 
     def __init__(self) -> None:
         # Initialite pigpio pi
+        GPIO.setmode(GPIO.BOARD)
         self.relay = [
             RelayPigPio(18, True),
             RelayPigPio(23, True),
