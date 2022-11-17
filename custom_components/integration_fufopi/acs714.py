@@ -50,15 +50,6 @@ class ACS712Entity(CoordinatorEntity):
         }
 
     @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return {
-            "attribution": ATTRIBUTION,
-            "id": self.unique_id,
-            "integration": DOMAIN,
-        }
-
-    @property
     def sensibility(self):
         """Return sensor sensibiliti in mV/A"""
         return 185
