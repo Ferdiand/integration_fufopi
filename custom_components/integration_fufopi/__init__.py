@@ -143,7 +143,8 @@ class FufoPiCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via serial com"""
         self._data = await self.smart_solar._async_update_data()
-        self.logger.warning(f"{self.ads1115.read(0,False)}")
+        value = await self.ads1115.read(ADS1115.P0, False)
+        self.logger.warning(f"{value}")
 
         return self._data
 
