@@ -71,8 +71,7 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
         super().__init__(coordinator, config_entry)
         self._sensor_no = sensor_no
         self._attr_name = f"ACS712 Sensor {self._sensor_no}"
-        self._attr_native_unit_of_measurement = ELECTRIC_POTENTIAL_MILLIVOLT
-        self._attr_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
+        self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
         self._attr_device_class = DEVICE_CLASS_CURRENT
 
     @property
@@ -83,6 +82,6 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         _raw_value = self.coordinator.data[f"ads1115_ch{self._sensor_no}"]
-        self._attr_native_value = (_raw_value - 25000) / self.sensibility
+        self._attr_native_value = (_raw_value - 2500) / self.sensibility
         self._attr_extra_state_attributes = [f"ads1115_ch{self._sensor_no}", _raw_value]
         self.async_write_ha_state()
