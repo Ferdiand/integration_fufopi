@@ -24,10 +24,10 @@ class RelayPigPio:
     """Pigpio relay class"""
 
     def __init__(self, pin_no, inverted=False) -> None:
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(pin_no, GPIO.OUT)
         self._pin_no = pin_no
         self._inverted = inverted
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self._pin_no, GPIO.OUT)
         self.relay_off()
 
     @property
