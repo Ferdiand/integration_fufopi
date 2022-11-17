@@ -13,10 +13,10 @@ class RelayBoardPigPio:
         # Initialite pigpio pi
         GPIO.setmode(GPIO.BOARD)
         self.relay = [
+            RelayPigPio(pin_no=12, inverted=True),
+            RelayPigPio(pin_no=16, inverted=True),
             RelayPigPio(pin_no=18, inverted=True),
-            RelayPigPio(pin_no=23, inverted=True),
-            RelayPigPio(pin_no=24, inverted=True),
-            RelayPigPio(pin_no=27, inverted=True),
+            RelayPigPio(pin_no=13, inverted=True),
         ]
 
 
