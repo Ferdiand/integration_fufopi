@@ -21,12 +21,14 @@ def add_power_lane_sensors(sensors, coordinator, config_entry):
     sensors.append(PowerLaneCurrentSensor(coordinator, config_entry, "Power 4", 13, 0))
 
 
-def add_power_lane_switchs(switchs, coordinator, config_entry):
+def add_power_lane_switches(coordinator, config_entry):
     """add sensors"""
-    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 1", 12, 0))
-    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 2", 16, 0))
-    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 3", 18, 0))
-    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 4", 13, 0))
+    switches = []
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 1", 12, 0))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 2", 16, 0))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 3", 18, 0))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 4", 13, 0))
+    return switches
 
 
 class PowerLaneEntity(CoordinatorEntity):
