@@ -34,10 +34,6 @@ class ADS1115Entity(CoordinatorEntity):
             "manufacturer": "Adafruit",
         }
 
-    @property
-    def extra_state_attributes(self):
-        return self._attr_extra_state_attributes
-
 
 class ADS1115Sensor(ADS1115Entity, SensorEntity):
     """ADS1115 sensor"""
