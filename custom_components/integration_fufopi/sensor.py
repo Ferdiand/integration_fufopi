@@ -84,9 +84,11 @@ from .hmc5883L import (
     HCM5883LSampleNoSensor,
 )
 
-from .ads1115 import ADS1115Channel0, ADS1115Channel1, ADS1115Channel2, ADS1115Channel3
+from .ads1115 import ADS1115Sensor
 
 from .acs714 import ACS712Sensor
+
+from .power_lane import PowerLaneCurrentSensor
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -137,15 +139,20 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _sensors.append(FridgeCurrentSensor(coordinator, entry))
     _sensors.append(FridgePowerSensor(coordinator, entry))
 
-    _sensors.append(ADS1115Channel0(coordinator, entry))
-    _sensors.append(ADS1115Channel1(coordinator, entry))
-    _sensors.append(ADS1115Channel2(coordinator, entry))
-    _sensors.append(ADS1115Channel3(coordinator, entry))
+    _sensors.append(ADS1115Sensor(coordinator, entry, 0))
+    _sensors.append(ADS1115Sensor(coordinator, entry, 1))
+    _sensors.append(ADS1115Sensor(coordinator, entry, 2))
+    _sensors.append(ADS1115Sensor(coordinator, entry, 3))
 
     _sensors.append(ACS712Sensor(coordinator, entry, 0))
     _sensors.append(ACS712Sensor(coordinator, entry, 1))
     _sensors.append(ACS712Sensor(coordinator, entry, 2))
     _sensors.append(ACS712Sensor(coordinator, entry, 3))
+
+    _sensors.append(PowerLaneCurrentSensor(coordinator, entry, "Power1", 12, 0))
+    _sensors.append(PowerLaneCurrentSensor(coordinator, entry, "Power2", 16, 1))
+    _sensors.append(PowerLaneCurrentSensor(coordinator, entry, "Power3", 18, 2))
+    _sensors.append(PowerLaneCurrentSensor(coordinator, entry, "Power4", 13, 3))
 
     #    _sensors.append(ADXL345AccelXSensor(coordinator, entry))
     #    _sensors.append(ADXL345AccelYSensor(coordinator, entry))

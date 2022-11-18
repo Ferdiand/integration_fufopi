@@ -1,49 +1,38 @@
-# ADXL345 Python library for Raspberry Pi
-#
-# author:  Jonathan Williamson
-# license: BSD, see LICENSE.txt included in this package
-#
-# This is a Raspberry Pi Python implementation to help you get started with
-# the Adafruit Triple Axis ADXL345 breakout board:
-# http://shop.pimoroni.com/products/adafruit-triple-axis-accelerometer
-
+""" ACS714 """
 from decimal import Decimal
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.core import callback
 
 from homeassistant.const import (
-    SPEED_METERS_PER_SECOND,
-    FREQUENCY_HERTZ,
-    DEVICE_CLASS_VOLTAGE,
     ELECTRIC_POTENTIAL_MILLIVOLT,
     DEVICE_CLASS_CURRENT,
     ELECTRIC_CURRENT_AMPERE,
 )
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.switch import SwitchEntity, DEVICE_CLASS_OUTLET
 
-from .const import DOMAIN, ATTRIBUTION
-
-# from . import FufoPiCoordinator
+from .const import DOMAIN
 
 
 class ACS712Entity(CoordinatorEntity):
     """ACS712 base entity"""
 
-    def __init__(self, coordinator, config_entry):
+    def __init__(self, coordinator, config_entry, sensor_no):
         super().__init__(coordinator)
         self.config_entry = config_entry
+        self._attr_assumed_state = True
+        self._sensor_no = sensor_no
+        # self._attr_entity_picture =
 
     @property
     def unique_id(self):
         """Return a unique ID to use for this entity."""
-        return self.config_entry.entry_id + "ACS712"
+        return self.config_entry.entry_id + "ACS712" + f"{self._sensor_no}"
 
     @property
     def device_info(self):
         return {
-            "identifiers": {(DOMAIN, "ACS712")},
+            "identifiers": {(DOMAIN, self.config_entry.entry_id + "ACS712")},
             "name": "ACS712",
             "model": "ACS712ELCTR-05B-T",
             "manufacturer": "Chini",
@@ -60,18 +49,13 @@ class ACS712Entity(CoordinatorEntity):
 
 
 class ACS712Sensor(ACS712Entity, SensorEntity):
-    """Fridge voltage sensor"""
+    """ACS712 sensor"""
 
     def __init__(self, coordinator, config_entry, sensor_no):
-        super().__init__(coordinator, config_entry)
-        self._sensor_no = sensor_no
+        super().__init__(coordinator, config_entry, sensor_no)
         self._attr_name = f"ACS712 Sensor {self._sensor_no}"
         self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
         self._attr_device_class = DEVICE_CLASS_CURRENT
-
-    @property
-    def unique_id(self):
-        return super().unique_id + f"{self._sensor_no}"
 
     @callback
     def _handle_coordinator_update(self) -> None:
