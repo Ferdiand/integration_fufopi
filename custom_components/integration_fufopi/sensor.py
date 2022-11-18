@@ -7,7 +7,7 @@ from .ads1115 import add_ads1115_sensors
 
 from .acs714 import add_acs712_sensors
 
-from .power_lane import PowerLaneDevice
+from .power_lane import add_power_lane_sensors
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -19,5 +19,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     add_acs712_sensors(sensors, coordinator, entry)
 
     add_ads1115_sensors(sensors, coordinator, entry)
+
+    add_power_lane_sensors(sensors, coordinator, entry)
 
     async_add_devices(sensors)
