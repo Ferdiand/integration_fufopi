@@ -8,4 +8,4 @@ async def async_setup_entry(hass, entry, async_add_devices):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     switches = []
     switches = add_power_lane_switches(coordinator, entry)
-    async_add_devices([switches])
+    async_add_devices(switches)
