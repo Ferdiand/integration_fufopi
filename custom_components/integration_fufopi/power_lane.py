@@ -83,7 +83,7 @@ class PowerLaneSwitch(PowerLaneEntity, SwitchEntity):
     @property
     def is_on(self) -> bool | None:
         """Return True if entity is on."""
-        return GPIO.input(self._pin_no) == 0
+        return GPIO.input(self._relay_pin) == 0
 
     def turn_on(self, **kwargs) -> None:
         """Turn the entity on."""
