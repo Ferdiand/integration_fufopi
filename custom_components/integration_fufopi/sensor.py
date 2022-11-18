@@ -16,9 +16,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     sensors = []
 
-    sensors.append(add_acs712_sensors(coordinator, entry))
+    sensors = sensors + add_acs712_sensors(coordinator, entry)
 
-    sensors.append(add_ads1115_sensors(coordinator, entry))
+    sensors = sensors + add_ads1115_sensors(coordinator, entry)
 
     add_power_lane_sensors(sensors, coordinator, entry)
 
