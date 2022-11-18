@@ -35,6 +35,8 @@ from .const import (
     STARTUP_MESSAGE,
 )
 
+import custom_components.integration_fufopi.sensor as sensor
+
 SCAN_INTERVAL = timedelta(seconds=30)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
@@ -66,8 +68,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "devices"))
-    # hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "switch"))
+    hass.async_add_job(
+        hass.config_entries.async_entries().async_forward_entry_setup(entry, "sensor")
+    )
+    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "switch"))
     # hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "binary_sensor"))
 
     # for platform in PLATFORMS:

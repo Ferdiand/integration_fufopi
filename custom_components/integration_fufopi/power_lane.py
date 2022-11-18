@@ -13,21 +13,20 @@ from RPi import GPIO
 from .const import DOMAIN
 
 
-class PowerLaneDevice:
-    """Power Lane device"""
+def add_sensors(sensors, coordinator, config_entry):
+    """add sensors"""
+    sensors.append(PowerLaneCurrentSensor(coordinator, config_entry, "Power 1", 12, 0))
+    sensors.append(PowerLaneCurrentSensor(coordinator, config_entry, "Power 2", 16, 0))
+    sensors.append(PowerLaneCurrentSensor(coordinator, config_entry, "Power 3", 18, 0))
+    sensors.append(PowerLaneCurrentSensor(coordinator, config_entry, "Power 4", 13, 0))
 
-    def __init__(self, coordinator, config_entry, name, relay_pin, channel_no):
-        self._current = PowerLaneCurrentSensor(
-            coordinator, config_entry, name, relay_pin, channel_no
-        )
-        self._switch = PowerLaneSwitch(
-            coordinator, config_entry, name, relay_pin, channel_no
-        )
 
-    def add_devices(self, devices):
-        """add devices"""
-        devices.append(self._current)
-        devices.append(self._switch)
+def add_switchs(switchs, coordinator, config_entry):
+    """add sensors"""
+    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 1", 12, 0))
+    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 2", 16, 0))
+    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 3", 18, 0))
+    switchs.append(PowerLaneSwitch(coordinator, config_entry, "Power 4", 13, 0))
 
 
 class PowerLaneEntity(CoordinatorEntity):
