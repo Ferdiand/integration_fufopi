@@ -14,12 +14,14 @@ from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 
 
-def add_acs712_sensors(sensors, coordinator, config_entry):
+def add_acs712_sensors(coordinator, config_entry):
     """Add devices"""
+    sensors = []
     sensors.append(ACS712Sensor(coordinator, config_entry, 0))
     sensors.append(ACS712Sensor(coordinator, config_entry, 1))
     sensors.append(ACS712Sensor(coordinator, config_entry, 2))
     sensors.append(ACS712Sensor(coordinator, config_entry, 3))
+    return sensors
 
 
 class ACS712Entity(CoordinatorEntity):
