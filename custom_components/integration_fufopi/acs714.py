@@ -14,6 +14,21 @@ from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 
 
+class ACS712Device:
+    """ACS712 Device"""
+
+    def __init__(self, coordinator, config_entry) -> None:
+        self._sensors = []
+        self._sensors.append(ACS712Sensor(coordinator, config_entry, 0))
+        self._sensors.append(ACS712Sensor(coordinator, config_entry, 1))
+        self._sensors.append(ACS712Sensor(coordinator, config_entry, 2))
+        self._sensors.append(ACS712Sensor(coordinator, config_entry, 3))
+
+    def add_devices(self, devices):
+        """Add devices"""
+        devices.append(self._sensors)
+
+
 class ACS712Entity(CoordinatorEntity):
     """ACS712 base entity"""
 

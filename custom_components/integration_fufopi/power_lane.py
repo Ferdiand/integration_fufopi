@@ -13,6 +13,23 @@ from RPi import GPIO
 from .const import DOMAIN
 
 
+class PowerLaneDevice:
+    """Power Lane device"""
+
+    def __init__(self, coordinator, config_entry, name, relay_pin, channel_no):
+        self._current = PowerLaneCurrentSensor(
+            coordinator, config_entry, name, relay_pin, channel_no
+        )
+        self._switch = PowerLaneSwitch(
+            coordinator, config_entry, name, relay_pin, channel_no
+        )
+
+    def add_devices(self, devices):
+        """add devices"""
+        devices.append(self._current)
+        devices.append(self._switch)
+
+
 class PowerLaneEntity(CoordinatorEntity):
     """Power lane entity"""
 
