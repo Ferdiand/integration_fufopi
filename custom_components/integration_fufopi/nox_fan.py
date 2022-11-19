@@ -73,7 +73,6 @@ class NoxFanFan(NoxFanEntity, FanEntity):
     def turn_off(self, **kwargs) -> None:
         self._pwm.ChangeDutyCycle(0)
         self._pwm.stop()
-        self._attr_is_on = False
 
     def set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
