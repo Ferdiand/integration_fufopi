@@ -126,6 +126,8 @@ class SmartSolarEntity(CoordinatorEntity):
 
 
 class SmartSolarDiagnosticEntity(SmartSolarEntity):
+    """Smart solar diagnostic entity"""
+
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_entity_category = "diagnostic"

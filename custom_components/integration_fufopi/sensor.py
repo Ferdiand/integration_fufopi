@@ -1,6 +1,4 @@
 """Sensor platform for integration_blueprint."""
-from decimal import Decimal
-from distutils.command.config import config
 from .const import DOMAIN
 
 from .ads1115 import add_ads1115_sensors
