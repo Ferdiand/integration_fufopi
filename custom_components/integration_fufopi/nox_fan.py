@@ -10,7 +10,7 @@ from homeassistant.const import (
     ELECTRIC_CURRENT_AMPERE,
 )
 
-from homeassistant.components.fan import FanEntity
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 
 from .const import DOMAIN
 
@@ -53,6 +53,21 @@ class NoxFanFan(NoxFanEntity, FanEntity):
     def __init__(self, coordinator, config_entry, pin_no):
         super().__init__(coordinator, config_entry, pin_no)
         self._attr_name = f"Nox fan {self._pin_no}"
+        self._attr_supported_features = FanEntityFeature.SET_SPEED
+
+    async def async_turn_on(
+        self,
+        speed: Optional[str] = None,
+        percentage: Optional[int] = None,
+        preset_mode: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """Turn on the fan."""
+        self._pwm.ChangeDutyCycle(percentage)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Turn the fan off."""
+        self._pwm.ChangeDutyCycle(0)
 
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
