@@ -79,8 +79,3 @@ class NoxFanFan(NoxFanEntity, FanEntity):
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
         self._pwm.ChangeDutyCycle(percentage)
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return True if entity is on."""
-        return GPIO.input(self._pin_no) == 1
