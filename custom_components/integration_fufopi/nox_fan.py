@@ -59,26 +59,22 @@ class NoxFanFan(NoxFanEntity, FanEntity):
         self._attr_name = f"Nox fan {self._pin_no}"
         self._attr_supported_features = FanEntityFeature.SET_SPEED
 
-    async def async_turn_on(
+    def turn_on(
         self,
         percentage: int | None = None,
         preset_mode: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
-        """Turn on the fan."""
         if percentage is None:
             self._pwm.start(100)
         else:
             self._pwm.start(percentage)
 
-        self._attr_is_on = True
-
-    async def async_turn_off(self, **kwargs) -> None:
-        """Turn the fan off."""
+    def turn_off(self, **kwargs: Any) -> None:
         self._pwm.ChangeDutyCycle(0)
         self._pwm.stop()
         self._attr_is_on = False
 
-    async def async_set_percentage(self, percentage: int) -> None:
+    def set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
         self._pwm.ChangeDutyCycle(percentage)
