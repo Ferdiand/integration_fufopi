@@ -128,7 +128,7 @@ class SmartSolarEntity(CoordinatorEntity):
 class SmartSolarDiagnosticEntity(SmartSolarEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
-        self._self._attr_entity_category = "diagnostic"
+        self._attr_entity_category = "diagnostic"
 
 
 class SmartSolarProductIDSensor(SmartSolarDiagnosticEntity, SensorEntity):

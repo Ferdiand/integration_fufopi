@@ -21,7 +21,7 @@ from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .relay_board import RelayBoardPigPio
-from .SmartSolar import (
+from .smart_solar_MPPT import (
     CS_VALUE_LIST,
     MPPT_VALUE_LIST,
     OR_VALUE_LIST,
@@ -120,7 +120,7 @@ class FufoPiCoordinator(DataUpdateCoordinator):
     ) -> None:
         super().__init__(hass, logger, name=name, update_interval=update_interval)
 
-        self.smart_solar = SmartSolar(logger=logger)
+        self.smart_solar = smart_solar_MPPT(logger=logger)
 
         # self.pigpio = pi("172.30.33.0")
         self.relay_board = RelayBoardPigPio()
@@ -150,7 +150,7 @@ class FufoPiCoordinator(DataUpdateCoordinator):
         return self._data
 
 
-class SmartSolar:
+class smart_solar_MPPT:
     """Smart solar VE Direct comm"""
 
     def __init__(self, logger: logging.Logger) -> None:
