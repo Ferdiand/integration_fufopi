@@ -57,15 +57,14 @@ class NoxFanFan(NoxFanEntity, FanEntity):
 
     async def async_turn_on(
         self,
-        speed: Optional[str] = None,
-        percentage: Optional[int] = None,
-        preset_mode: Optional[str] = None,
-        **kwargs: Any,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
+        **kwargs,
     ) -> None:
         """Turn on the fan."""
         self._pwm.ChangeDutyCycle(percentage)
 
-    async def async_turn_off(self, **kwargs: Any) -> None:
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
         self._pwm.ChangeDutyCycle(0)
 
