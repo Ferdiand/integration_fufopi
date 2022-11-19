@@ -29,8 +29,7 @@ class NoxFanEntity(CoordinatorEntity):
         self._pin_no = pin_no
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self._pin_no, GPIO.OUT)
-        self._pwm = GPIO.PWM(self._pin_no, 100)
-        self._pwm.start(100)
+        self._pwm = GPIO.PWM(self._pin_no, self.frequency)
 
     @property
     def unique_id(self):
@@ -45,6 +44,11 @@ class NoxFanEntity(CoordinatorEntity):
             "model": "Megachuli",
             "manufacturer": "Nox",
         }
+
+    @property
+    def frequency(self):
+        """retrun the frequency in Hz"""
+        return 100
 
 
 class NoxFanFan(NoxFanEntity, FanEntity):
@@ -62,12 +66,21 @@ class NoxFanFan(NoxFanEntity, FanEntity):
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        self._pwm.ChangeDutyCycle(percentage)
+        if percentage is None:
+            self._pwm.start(100)
+        else:
+            self._pwm.start(percentage)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
         self._pwm.ChangeDutyCycle(0)
+        self._pwm.stop()
 
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
         self._pwm.ChangeDutyCycle(percentage)
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return True if entity is on."""
+        return GPIO.input(self._pin_no) == 1
