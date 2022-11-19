@@ -63,14 +63,14 @@ class NoxFanFan(NoxFanEntity, FanEntity):
         self,
         percentage: int | None = None,
         preset_mode: str | None = None,
-        **kwargs: Any,
+        **kwargs,
     ) -> None:
         if percentage is None:
             self._pwm.start(100)
         else:
             self._pwm.start(percentage)
 
-    def turn_off(self, **kwargs: Any) -> None:
+    def turn_off(self, **kwargs) -> None:
         self._pwm.ChangeDutyCycle(0)
         self._pwm.stop()
         self._attr_is_on = False
