@@ -102,6 +102,7 @@ def add_smart_solar_mppt_sensors(sensors, coordinator, config_entry):
     sensors.append(SmartSolarH21Sensor(coordinator, config_entry))
     sensors.append(SmartSolarH22Sensor(coordinator, config_entry))
     sensors.append(SmartSolarH23Sensor(coordinator, config_entry))
+    sensors.append(BatteryPerCentSensor(coordinator, config_entry))
 
 
 class SmartSolarEntity(CoordinatorEntity):
@@ -132,6 +133,20 @@ class SmartSolarDiagnosticEntity(SmartSolarEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator, config_entry)
         self._attr_entity_category = "diagnostic"
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self.config_entry.entry_id + "SmartSolar"
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self.config_entry.entry_id + "SmartSolar")},
+            "name": "SmartSolar MPPT 100|20 48V",
+            "model": "HQ2129WD7QV",
+            "manufacturer": "Victron Energy",
+        }
 
 
 class SmartSolarProductIDSensor(SmartSolarDiagnosticEntity, SensorEntity):
