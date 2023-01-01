@@ -1,5 +1,5 @@
 """ Smart Solar MPPT"""
-
+from decimal import Decimal
 from homeassistant.core import callback
 
 from homeassistant.helpers.update_coordinator import (
@@ -12,6 +12,7 @@ from homeassistant.const import (
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_BATTERY,
     ELECTRIC_CURRENT_MILLIAMPERE,
     ELECTRIC_POTENTIAL_MILLIVOLT,
     POWER_WATT,
@@ -518,3 +519,59 @@ class SmartSolarH23Sensor(SmartSolarEntity, SensorEntity):
         self._attr_native_value = self.coordinator.smart_solar.max_power_yesterday
 
         self.async_write_ha_state()
+
+
+class BatteryPerCentSensor(SmartSolarEntity, SensorEntity):
+    """% of battery capacity"""
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry)
+        self._attr_name = "Battery left"
+        self._attr_device_class = DEVICE_CLASS_BATTERY
+        self._attr_native_unit_of_measurement = "%"
+
+    @property
+    def unique_id(self):
+        return super().unique_id + "BPC"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _data = [
+            (Decimal(9000), Decimal(0.0)),
+            (Decimal(10000), Decimal(20.0)),
+            (Decimal(11000), Decimal(40.0)),
+            (Decimal(12000), Decimal(60.0)),
+            (Decimal(13000), Decimal(80.0)),
+            (Decimal(14000), Decimal(100.0)),
+            (Decimal(15000), Decimal(120.0)),
+        ]
+
+        _min_voltage, _min_per_cent = _data[0]
+        _voltage = Decimal(self.coordinator.smart_solar.battery_voltage) * Decimal(
+            0.001
+        )
+
+        self._attr_native_value = Decimal(0)
+
+        if _voltage >= _min_voltage:
+            for _v, _per_cent in _data:
+                if _voltage == _v:
+                    self._attr_native_value = _per_cent.quantize(Decimal("1.0"))
+
+                elif _voltage < _v:
+                    self._attr_native_value = self._scale(
+                        _voltage, (_v, _per_cent), (_min_voltage, _min_per_cent)
+                    ).quantize(Decimal("1.0"))
+                else:
+                    _min_voltage = _v
+                    _min_per_cent = _per_cent
+
+        self.async_write_ha_state()
+
+    def _scale(self, x, upper, lower):
+        _x1, _y1 = lower
+        _x2, _y2 = upper
+        _m = (_y2 - _y1) / (_x2 - _x1)
+        _n = _m * _x1 - _y1
+        return x * _m - _n
