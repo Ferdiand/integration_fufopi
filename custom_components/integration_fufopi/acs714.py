@@ -76,12 +76,12 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
 
         self._attr_native_value = Decimal(_raw_value).quantize(Decimal("0.01"))
 
-        self._attr_extra_state_attributes = {
-            "integration": DOMAIN,
-            "adschannel": f"ch{self._sensor_no}",
-            "sensor_value": _sensor_value,
-            "sensor_units": ELECTRIC_POTENTIAL_MILLIVOLT,
-            "sensibility": f"{self.sensibility} mV/A",
-            "raw value": _raw_value,
-        }
+        # self._attr_extra_state_attributes = {
+        #    "integration": DOMAIN,
+        #    "adschannel": f"ch{self._sensor_no}",
+        #    "sensor_value": _sensor_value,
+        #    "sensor_units": ELECTRIC_POTENTIAL_MILLIVOLT,
+        #    "sensibility": f"{self.sensibility} mV/A",
+        #    "raw value": _raw_value,
+        # }
         self.async_write_ha_state()
