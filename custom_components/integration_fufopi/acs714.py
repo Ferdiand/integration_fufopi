@@ -63,9 +63,9 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
         self._attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
         self._attr_device_class = DEVICE_CLASS_CURRENT
 
-    @property
-    def extra_state_attributes(self):
-        return self._attr_extra_state_attributes
+    # @property
+    # def extra_state_attributes(self):
+    #    return self._attr_extra_state_attributes
 
     @callback
     def _handle_coordinator_update(self) -> None:
