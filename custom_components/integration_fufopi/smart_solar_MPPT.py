@@ -546,6 +546,8 @@ class BatteryPerCentSensor(SmartSolarEntity, SensorEntity):
             0.001
         )
 
+        self.coordinator.logger.warn(f"_voltage: {_voltage}")
+
         self._attr_native_value = Decimal(0)
 
         if _voltage >= _min_voltage:
