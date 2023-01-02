@@ -127,29 +127,7 @@ class SmartSolarEntity(CoordinatorEntity):
         }
 
 
-class SmartSolarDiagnosticEntity(SmartSolarEntity):
-    """Smart solar diagnostic entity"""
-
-    def __init__(self, coordinator, config_entry):
-        super().__init__(coordinator, config_entry)
-        self._attr_entity_category = "diagnostic"
-
-    @property
-    def unique_id(self):
-        """Return a unique ID to use for this entity."""
-        return self.config_entry.entry_id + "SmartSolar"
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self.config_entry.entry_id + "SmartSolar")},
-            "name": "SmartSolar MPPT 100|20 48V",
-            "model": "HQ2129WD7QV",
-            "manufacturer": "Victron Energy",
-        }
-
-
-class SmartSolarProductIDSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarProductIDSensor(SmartSolarEntity, SensorEntity):
     """Smart solar Product ID Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -169,7 +147,7 @@ class SmartSolarProductIDSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarFirmwareSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarFirmwareSensor(SmartSolarEntity, SensorEntity):
     """Smart solar Firmware Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -189,7 +167,7 @@ class SmartSolarFirmwareSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarSerialNumberSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarSerialNumberSensor(SmartSolarEntity, SensorEntity):
     """Smart solar serial number Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -209,7 +187,7 @@ class SmartSolarSerialNumberSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarCSSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarCSSensor(SmartSolarEntity, SensorEntity):
     """Smart solar operation state Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -229,7 +207,7 @@ class SmartSolarCSSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarMPPTSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarMPPTSensor(SmartSolarEntity, SensorEntity):
     """Smart solar tracker op mode Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -249,7 +227,7 @@ class SmartSolarMPPTSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarORSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarORSensor(SmartSolarEntity, SensorEntity):
     """Smart solar off reason Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -269,7 +247,7 @@ class SmartSolarORSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarHSDSSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarHSDSSensor(SmartSolarEntity, SensorEntity):
     """Smart solar day seq number Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -288,7 +266,7 @@ class SmartSolarHSDSSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarCheckSumSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarCheckSumSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
     def __init__(self, coordinator, config_entry):
@@ -307,7 +285,7 @@ class SmartSolarCheckSumSensor(SmartSolarDiagnosticEntity, SensorEntity):
         self.async_write_ha_state()
 
 
-class SmartSolarErrSensor(SmartSolarDiagnosticEntity, SensorEntity):
+class SmartSolarErrSensor(SmartSolarEntity, SensorEntity):
     """Smart solar checksum Sensor class."""
 
     def __init__(self, coordinator, config_entry):
