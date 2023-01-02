@@ -528,6 +528,13 @@ class BatteryPerCentSensor(SmartSolarEntity, SensorEntity):
     def unique_id(self):
         return super().unique_id + "BPC"
 
+    def _scale(self, x, upper, lower):
+        _x1, _y1 = lower
+        _x2, _y2 = upper
+        _m = (_y2 - _y1) / (_x2 - _x1)
+        _n = _m * _x1 - _y1
+        return x * _m - _n
+
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
@@ -564,10 +571,3 @@ class BatteryPerCentSensor(SmartSolarEntity, SensorEntity):
                     _min_per_cent = _per_cent
 
         self.async_write_ha_state()
-
-    def _scale(self, x, upper, lower):
-        _x1, _y1 = lower
-        _x2, _y2 = upper
-        _m = (_y2 - _y1) / (_x2 - _x1)
-        _n = _m * _x1 - _y1
-        return x * _m - _n
