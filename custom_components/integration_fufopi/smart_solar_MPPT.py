@@ -549,11 +549,9 @@ class BatteryPerCentSensor(SmartSolarEntity, SensorEntity):
         ]
 
         _min_voltage, _min_per_cent = _data[0]
-        _voltage = Decimal(self.coordinator.smart_solar.battery_voltage) * Decimal(
-            0.001
-        )
+        _voltage = Decimal(self.coordinator.smart_solar.battery_voltage)
 
-        self.coordinator.logger.warn(f"_voltage: {_voltage}")
+        # self.coordinator.logger.warn(f"_voltage: {_voltage}")
 
         self._attr_native_value = Decimal(0)
 
