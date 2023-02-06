@@ -72,7 +72,7 @@ class ACS712Sensor(ACS712Entity, SensorEntity):
         """Handle updated data from the coordinator."""
         _sensor_value = self.coordinator.data[f"ads1115_ch{self._sensor_no}"]
 
-        _raw_value = (_sensor_value - 2500) / self.sensibility
+        _raw_value = (_sensor_value - 2400) / self.sensibility
 
         self._attr_native_value = Decimal(_raw_value).quantize(Decimal("0.01"))
 
