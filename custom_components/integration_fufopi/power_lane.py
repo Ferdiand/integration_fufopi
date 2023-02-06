@@ -23,9 +23,9 @@ def add_power_lane_sensors(sensors, coordinator, config_entry):
 
 def add_power_lane_switches(switches, coordinator, config_entry):
     """add sensors"""
-    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 1", 12, 0))
-    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 2", 16, 0))
-    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 3", 18, 0))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 1", 12, 3))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 2", 16, 2))
+    switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 3", 18, 1))
     switches.append(PowerLaneSwitch(coordinator, config_entry, "Power 4", 13, 0))
 
 
@@ -73,7 +73,7 @@ class PowerLaneCurrentSensor(PowerLaneEntity, SensorEntity):
         # sensibility 185 mV/A
         _sensibility = 185
 
-        _raw_value = (_sensor_value - 2500) / _sensibility
+        _raw_value = (_sensor_value - 2400) / _sensibility
 
         self._attr_native_value = Decimal(_raw_value).quantize(Decimal("0.01"))
 
